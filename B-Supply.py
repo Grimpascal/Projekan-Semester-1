@@ -192,6 +192,8 @@ def halaman_admin():
             kelola_mitra()
         elif pilihan == 2:
             kelola_barang()
+        elif pilihan == 3:
+            kelola_kendaraan()
         elif pilihan == 5:
             kelola_user()
         elif pilihan == 6:
@@ -217,10 +219,6 @@ def kelola_barang():
         print('Toko terdeteksi, mengarahkan ke halaman...')
         time.sleep(2)
         menu_kelola_barang()
-    elif ((data['kode'] == inputToko) & (data['Status'] == 'Tidak Aktif')).any():
-        print('Toko berstatus tidak tersedia, silakan cek kembali')
-        time.sleep(2)
-        kelola_barang()
     elif inputToko == 'EXIT':
         halaman_admin()
     else:
@@ -579,7 +577,7 @@ def kelola_mitra_hapus():
     if os.path.exists(f'csv/toko/{hapusMitra}.csv'):
         konfirmasi = input('Apakah anda yakin ingin menghapus mitra [y][n] : ').lower()
         if konfirmasi == 'y':
-            data.loc[data['kode'] == hapusMitra, 'Status'] = 'Tidak Aktif'
+            data = data[data['kode'] != hapusMitra]
             data.to_csv('csv/dataMitra.csv', index=False)
             os.remove(f'csv/toko/{hapusMitra}.csv')
             print('Mitra berhasil dihapus...')
@@ -628,5 +626,103 @@ def tambah_user():
         print('data User berhasil ditambahkan')
         input('tekan enter untuk kembali>>>')
     halaman_admin()
+
+def kelola_kendaraan():
+    os.system('cls')
+    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
+    print('|| ^^^ 	     	   SELAMAT DATANG            ^^^||')
+    print('||----- Berikut menu untuk kelola kendaraan -----||')
+    print('||                1. Cek kendaraan               ||')
+    print('||                2. Tambah kendaraan            ||')
+    print('||                3. Edit kendaraan              ||')
+    print('||                4. Hapus kendaraan             ||')
+    print('||                5. Kembali                     ||')
+    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
+    try:
+        pilihan = int(input("Masukan Pilihan Anda : "))
+        if pilihan == 1:
+            cek_ketersediaan_kendaraan()
+        elif pilihan == 2:
+            tambah_kendaraan()
+        elif pilihan == 3:
+            edit_kendaraan()
+        elif pilihan == 4:
+            hapus_kendaraan()
+        elif pilihan == 5:
+            halaman_admin
+        else:
+            print("pilihan tidak ada, silahkan coba lagi")
+            time.sleep(2)
+            kelola_kendaraan()
+    except ValueError:
+        print("input harus berupa angka, silahkan coba lagi")
+        time.sleep(2)
+        kelola_kendaraan()
+
+def cek_ketersediaan_kendaraan():
+    os.system('cls')
+    try:
+        data = pd.read_csv('csv/dataKendaraan.csv')
+        data.index = range(1,len(data)+1)
+        print(tabulate(data,headers='keys',tablefmt='grid'))
+    except FileNotFoundError:
+        print("data kendaraan tidak ditemukan")
+    input("tekan enter untuk kembali...")
+    kelola_kendaraan()
+
+def tambah_kendaraan():
+    os.system('cls')
+    status = 'Tersedia'
+    kodeKendraan = input('Masukkan kode kendaraan : ').upper()
+    jenisInput = input("masukkan jenis kendaraan (Motor/Mobil): ").capitalize()
+    inputPlat = input("masukkan nomor Plat kendaraan: ").upper()
+    with open('csv/dataKendaraan.csv', 'a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([kodeKendraan,jenisInput,inputPlat,status])
+    print("kendaraan berhasil ditambahkan")
+    time.sleep(2)
+    kelola_kendaraan()
+
+def edit_kendaraan():
+    os.system('cls')
+    try:
+        data = pd.read_csv('csv/dataKendaraan.csv')
+        data.index = range(1,len(data)+1)
+        print(tabulate(data,headers='keys',tablefmt='grid'))
+        kode = input("masukkan kode kendaraan yang ingin diedit: ").upper()
+        if kode in data['kode'].values:
+            print('Data kendaraan ditemukan')
+            jenis_baru = input("masukkan jenis kendaraan baru (kosongkan jika tidak ada yang diubah) : ").capitalize()
+            status_baru = input("masukkan status kendaraan baru (kosongkan jika tidak ada yang diubah) : ").capitalize()
+            if jenis_baru:
+                data.loc[data['plat'] == kode, 'jenis'] = jenis_baru
+            if status_baru:
+                data.loc[data['kode'] == kode, 'status'] = status_baru
+            data.to_csv('csv/dataKendaraan.csv', index=False)
+            print("Data kendaraan berhasil di tambahkan")
+        else:
+            print("Data kendaraan tidak ditemukan")
+    except ValueError:
+        print("Data kendaraan tidak ditemukan")
+    input("Tekan enter untuk kembali...")
+    kelola_kendaraan()
+
+def hapus_kendaraan():
+    os.system('cls')
+    data = pd.read_csv('csv/dataKendaraan.csv')
+    data.index = range(1,len(data)+1)
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    kode = input("Masukkan kode kendaraan yang ingin dihapus: ").upper()
+    if kode in data['kode'].values:
+        data = data[data['kode'] != kode]
+        data.to_csv('csv/dataKendaraan.csv', index=False)
+        print("Kendaraan berhasil dihapus.")
+        time.sleep(2)
+        kelola_kendaraan()
+    else:
+        print("Kendaraan tidak ditemukan.")
+        time.sleep(2)
+        kelola_kendaraan()
+    input("Tekan enter untuk kembali...")
 
 utama()
