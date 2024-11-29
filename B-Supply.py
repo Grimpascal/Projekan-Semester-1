@@ -186,15 +186,22 @@ def halaman_admin():
     print('||                6. Laporan                     ||')
     print('||                7. Log Out                     ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
-    pilihan = int(input("Masukan Pilihan Anda : "))
-    if pilihan == 1:
-        kelola_mitra()
-    elif pilihan == 2:
-        kelola_barang()
-    elif pilihan == 5:
-        kelola_user()
-    elif pilihan == 6:
-        utama()
+    try:
+        pilihan = int(input("Masukan Pilihan Anda : "))
+        if pilihan == 1:
+            kelola_mitra()
+        elif pilihan == 2:
+            kelola_barang()
+        elif pilihan == 5:
+            kelola_user()
+        elif pilihan == 6:
+            utama()
+        else:
+            print('Pilihan tidak ada')
+            time.sleep(2)
+            halaman_admin()
+    except ValueError:
+        print('Pilihan harus angka & tidak boleh kosong!')
 
 def kelola_barang():
     os.system('cls')
@@ -250,6 +257,10 @@ def kelola_mitra():
         kelola_mitra_edit()
     elif pilihan == 5:
         halaman_admin()
+    else:
+        print('Tidak ada di pilihan')
+        time.sleep(2)
+        kelola_mitra()
 
 def kelola_user():
     os.system('cls')    
@@ -321,11 +332,13 @@ def kelola_mitra_Tambah():
 
 def kelola_mitra_edit():
     os.system('cls')
-    kodeMitra = input('Masukkan kode toko yang ingin diubah : ').upper()
+    data = pd.read_csv('csv/dataMitra.csv')
+    data.index = range(1, len(data)+1)
+    print(tabulate(data,headers='keys', tablefmt='grid'))
     print('KETIK "EXIT" UNTUK KEMBALI')
+    kodeMitra = input('Masukkan kode toko yang ingin diubah : ').upper()
     if kodeMitra == 'EXIT':
         kelola_mitra()
-    data = pd.read_csv('csv/dataMitra.csv')
     if kodeMitra in data['kode'].values:
         print('''Ingin mengubah bagian :
 1. Nama
@@ -372,6 +385,9 @@ def kelola_mitra_edit():
 
 def kelola_mitra_hapus():
     os.system('cls')
+    data = pd.read_csv('csv/dataMitra.csv')
+    data.index = range(1, len(data)+1)
+    print(tabulate(data,headers='keys', tablefmt='grid'))
     print('KETIK "EXIT" UNTUK KEMBALI')
     hapusMitra = input('Masukkan kode mitra yang ingin dihapus : ').upper()
     if hapusMitra == 'EXIT':
@@ -379,7 +395,6 @@ def kelola_mitra_hapus():
     if os.path.exists(f'csv/toko/{hapusMitra}.csv'):
         konfirmasi = input('Apakah anda yakin ingin menghapus mitra [y][n] : ').lower()
         if konfirmasi == 'y':
-            data = pd.read_csv('csv/dataMitra.csv')
             data.loc[data['kode'] == hapusMitra, 'Status'] = 'Tidak Aktif'
             data.to_csv('csv/dataMitra.csv', index=False)
             os.remove(f'csv/toko/{hapusMitra}.csv')
