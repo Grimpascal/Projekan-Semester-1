@@ -13,9 +13,9 @@ Fitur :
 
 *Menu Admin :
 -Kelola Mitra [done]
--Kelola barang
--Kelola kendaraan
--Kelola distribusi barang
+-Kelola barang [done]
+-Kelola kendaraan [done]
+-Kelola distribusi barang [done]
 -Kelola pengguna [done]
 -Laporan
--Log Out
+-Log Out [done]

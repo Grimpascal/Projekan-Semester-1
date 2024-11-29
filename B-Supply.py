@@ -39,12 +39,15 @@ def utama():
 
 def login_admin():
     os.system('cls')
+    print('='*40)
+    print('LOGIN ADMIN'.center(40))
+    print('='*40)
     inputUser = input("Masukkan username Anda: ").rstrip().lower()
     inputPass = input('Masukkan password Anda: ').rstrip().lower()
     data = pd.read_csv('csv/dataAdmin.csv')
     user = data[(data['Username'] == inputUser) & (data['Password'] == inputPass)]
     if not user.empty:
-        print("Selamat datang, Anda berhasil login sebagai Admin")
+        print("\nSelamat datang, Anda berhasil login sebagai Admin...")
         time.sleep(2)
         halaman_admin()
     else:
@@ -194,9 +197,13 @@ def halaman_admin():
             kelola_barang()
         elif pilihan == 3:
             kelola_kendaraan()
+        elif pilihan == 4:
+            menu_kelola_distribusi()
         elif pilihan == 5:
             kelola_user()
         elif pilihan == 6:
+            laporan_admin()
+        elif pilihan == 7:
             utama()
         else:
             print('Pilihan tidak ada')
@@ -206,6 +213,70 @@ def halaman_admin():
         print('Pilihan harus angka & tidak boleh kosong!')
         time.sleep(2)
         halaman_admin()
+
+def laporan_admin():
+    os.system('cls')
+    print('='*40)
+    print('LAPORAN'.center(40))
+    print('='*40)
+    print('Pilih laporan apa yang ingin di tampilkan')
+    print('1. Laporan Mitra')
+    print('2. Laporan keluhan')
+    print('3. Kembali')
+    pilihan = int(input('Masukkan pilihan : '))
+    if pilihan == 1:
+        laporan_mitra()
+    elif pilihan == 2:
+        laporan_keluhan()
+    elif pilihan == 3:
+        halaman_admin()
+    else:
+        print('Tidak ada di pilihan...')
+        time.sleep(2)
+        laporan_admin()
+
+def laporan_keluhan():
+    os.system('cls')
+    data = pd.read_csv('csv/keluhanUser.csv')
+    data.index = range(1, len(data)+1)
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    input('tekan ENTER untuk kembali >>>')
+    laporan_admin()
+
+def laporan_mitra():
+    os.system('cls')
+    print('sek bang.....')
+
+def menu_kelola_distribusi():
+    os.system('cls')
+    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
+    print('|| ^^^ 	     	   SELAMAT DATANG            ^^^ ||')
+    print('||--------- Apa yang ingin anda lakukan?---------||')
+    print('||                1. Cek Pengiriman              ||')
+    print('||                2. Kembali                     ||')
+    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
+    try:
+        pilihan = int(input('Masukkan pilihan : '))
+    except ValueError:
+        print('Pilihan harus angka & tidak boleh kosong!')
+        time.sleep(2)
+        menu_kelola_distribusi()
+    if pilihan == 1:
+        cek_pengiriman()
+    elif pilihan == 2:
+        halaman_admin()
+    else:
+        print('Tidak ada di pilihan...')
+        time.sleep(2)
+        menu_kelola_distribusi()
+
+def cek_pengiriman():
+    os.system('cls')
+    data = pd.read_csv('csv/dataPengiriman.csv')
+    data.index = range(1,len(data)+1)
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    input('Tekan ENTER untuk kembali >>>')
+    kelola_distribusi()
 
 def kelola_barang():
     os.system('cls')
