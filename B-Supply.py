@@ -259,14 +259,19 @@ def tambah_barang():
     print('='*40)
     print('TAMBAH BARANG'.center(40))
     print('='*40)
-    kodeBrg = input('Masukkan kode barang : ').upper()
-    namaBrg = input('Masukkan nama barang : ').capitalize()
-    hargaBrg = int(input('Tentukan harga barang : '))
-    stokBrg = int(input('Masukkan Jumlah Stok :'))
-    with open(f'csv/toko/{inputToko}.csv', 'a', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow([kodeBrg,namaBrg,hargaBrg,stokBrg])
-        input('Barang telah berhasil ditambahkan, ingin menambahkan barang lain? [y][n] :  ')
+    jmlTambah = int(input('Ingin menambah berapa barang : '))
+    for i in range(jmlTambah):
+        os.system('cls')
+        kodeBrg = input('Masukkan kode barang : ').upper()
+        namaBrg = input('Masukkan nama barang : ').capitalize()
+        hargaBrg = int(input('Tentukan harga barang : '))
+        stokBrg = int(input('Masukkan Jumlah Stok :'))
+        with open(f'csv/toko/{inputToko}.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([kodeBrg,namaBrg,hargaBrg,stokBrg])
+        print('Barang berhasil ditambahkan...')
+        time.sleep(2)
+    menu_kelola_barang()
 
 def kelola_mitra():
     os.system('cls')
