@@ -235,16 +235,22 @@ def menu_kelola_barang():
     print('||--------- Apa yang ingin anda lakukan?---------||')
     print('||                1. Tampilkan Barang            ||')
     print('||                2. Tambah Barang               ||')
-    print('||                3. Edit harga                  ||')
-    print('||                4. Edit harga                  ||')
-    print('||                5. Edit Stok                   ||')
-    print('||                6. Keluar                      ||')
+    print('||                3. Edit barang                 ||')
+    print('||                4. Keluar                      ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     inputUser = int(input('Masukkan pilihan : '))
     if inputUser == 1:
         tampilkan_barang()
     elif inputUser == 2:
         tambah_barang()
+    elif inputUser == 3:
+        edit_barang()
+    elif inputUser == 4:
+        halaman_admin()
+    else:
+        print('Tidak ada dipilihan...')
+        time.sleep(2)
+        menu_kelola_barang()
 
 def tampilkan_barang():
     os.system('cls')
@@ -259,6 +265,7 @@ def tambah_barang():
     print('='*40)
     print('TAMBAH BARANG'.center(40))
     print('='*40)
+    data = pd.read_csv(f'csv/toko/{inputToko}.csv')
     jmlTambah = int(input('Ingin menambah berapa barang : '))
     for i in range(jmlTambah):
         os.system('cls')
@@ -266,12 +273,146 @@ def tambah_barang():
         namaBrg = input('Masukkan nama barang : ').capitalize()
         hargaBrg = int(input('Tentukan harga barang : '))
         stokBrg = int(input('Masukkan Jumlah Stok :'))
-        with open(f'csv/toko/{inputToko}.csv', 'a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow([kodeBrg,namaBrg,hargaBrg,stokBrg])
-        print('Barang berhasil ditambahkan...')
-        time.sleep(2)
+        if kodeBrg in data['KodeBrg'].values:
+            print('Kode sudah ada, pilih kode lain!')
+            time.sleep(2)
+        else:
+            with open(f'csv/toko/{inputToko}.csv', 'a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([kodeBrg,namaBrg,hargaBrg,stokBrg])
+            print('Barang berhasil ditambahkan...')
+            time.sleep(2)
     menu_kelola_barang()
+
+def edit_barang():
+    os.system('cls')
+    print("=" * 40)
+    print(" PILIH OPSI ".center(40, "="))
+    print("=" * 40)
+    print("1. Ubah Nama Barang".ljust(30))
+    print("2. Ubah Harga Barang".ljust(30))
+    print("3. Tambah Stok".ljust(30))
+    print("4. Kurangi Stok".ljust(30))
+    print("5. Kembali".ljust(30))
+    print("=" * 40)
+    inputUser = int(input('Masukkan pilihan : '))
+    if inputUser == 1:
+        ubah_nama_barang()
+    elif inputUser == 2:
+        ubah_harga_barang()
+    elif inputUser == 3:
+        tambah_stok_barang()
+    elif inputUser == 4:
+        kurangi_stok_barang()
+    elif inputUser == 5:
+        menu_kelola_barang()
+    else:
+        print('Tidak ada di pilihan...')
+        time.sleep(2)
+        edit_barang()
+
+def ubah_nama_barang():
+    while True:
+        os.system('cls')
+        data = pd.read_csv(f'csv/toko/{inputToko}.csv')
+        print('Ketik "M" untuk lihat kode barang')
+        inputKode = input('Masukkan kode barang yang akan diubah : ').upper()
+        if inputKode == 'M':
+            os.system('cls')
+            data.index = range(1, len(data)+1)
+            print(tabulate(data,headers='keys', tablefmt='grid'))
+            input('Klik ENTER untuk kembali >>>')
+            continue
+        elif inputKode in data['KodeBrg'].values:
+            a = input('Masukkan nama baru : ').capitalize()
+            data.loc[data['KodeBrg'] == inputKode, 'NamaBrg'] = a
+            data.to_csv(f'csv/toko/{inputToko}.csv', index=False)
+            print('Nama barang berhasil diubah...')
+            time.sleep(2)
+            edit_barang()
+        else:
+            print('Kode tidak ditemukan')
+            time.sleep(2)
+            edit_barang()
+            
+def ubah_harga_barang():
+    while True:
+        os.system('cls')
+        data = pd.read_csv(f'csv/toko/{inputToko}.csv')
+        print('Ketik "M" untuk lihat kode barang')
+        inputKode = input('Masukkan kode barang yang akan diubah : ').upper()
+        if inputKode == 'M':
+            os.system('cls')
+            data.index = range(1, len(data)+1)
+            print(tabulate(data,headers='keys', tablefmt='grid'))
+            input('Klik ENTER untuk kembali >>>')
+            continue
+        elif inputKode in data['KodeBrg'].values:
+            a = int(input('Masukkan harga baru : '))
+            data.loc[data['KodeBrg'] == inputKode, 'Harga'] = a
+            data.to_csv(f'csv/toko/{inputToko}.csv', index=False)
+            print('Harga barang berhasil diubah...')
+            time.sleep(2)
+            edit_barang()
+        else:
+            print('Kode tidak ditemukan')
+            time.sleep(2)
+            edit_barang()
+
+def tambah_stok_barang():
+    while True:
+        os.system('cls')
+        data = pd.read_csv(f'csv/toko/{inputToko}.csv')
+        print('Ketik "M" untuk lihat kode barang')
+        inputKode = input('Masukkan kode barang yang akan diubah : ').upper()
+        if inputKode == 'M':
+            os.system('cls')
+            data.index = range(1, len(data)+1)
+            print(tabulate(data,headers='keys', tablefmt='grid'))
+            input('Klik ENTER untuk kembali >>>')
+            continue
+        elif inputKode in data['KodeBrg'].values:
+            a = int(input('Tambahkan jumlah stok : '))
+            data.loc[data['KodeBrg'] == inputKode, 'Stok'] += a
+            data.to_csv(f'csv/toko/{inputToko}.csv', index=False)
+            print('Stok barang berhasil ditambah...')
+            time.sleep(2)
+            edit_barang()
+        else:
+            print('Kode tidak ditemukan')
+            time.sleep(2)
+            edit_barang()
+
+def kurangi_stok_barang():
+    while True:
+        os.system('cls')
+        data = pd.read_csv(f'csv/toko/{inputToko}.csv')
+        print('Ketik "M" untuk lihat kode barang')
+        inputKode = input('Masukkan kode barang yang akan diubah : ').upper()
+        if inputKode == 'M':
+            os.system('cls')
+            data.index = range(1, len(data)+1)
+            print(tabulate(data,headers='keys', tablefmt='grid'))
+            input('Klik ENTER untuk kembali >>>')
+            continue
+        elif inputKode in data['KodeBrg'].values:
+            a = int(input('Kurangi jumlah stok : '))
+            cek = data[data['KodeBrg'] == inputKode]
+            jml = cek['Stok'].values[0]
+            if jml < 1:
+                print('Barang tidak memiliki stok, tidak bisa dikurangi')
+                time.sleep(2)
+                edit_barang()
+            else:
+                data.loc[data['KodeBrg'] == inputKode, 'Stok'] -= a
+                data.to_csv(f'csv/toko/{inputToko}.csv', index=False)
+                print('Stok barang berhasil dikurangi...')
+                time.sleep(2)
+                edit_barang()
+        else:
+            print('Kode tidak ditemukan')
+            time.sleep(2)
+            edit_barang()
 
 def kelola_mitra():
     os.system('cls')
@@ -391,14 +532,14 @@ def kelola_mitra_edit():
         try:
             inputUser = int(input('Masukkan pilihan : '))
             if inputUser == 1:
-                inputNama = input('Masukkan nama baru : ')
+                inputNama = input('Masukkan nama baru : ').capitalize()
                 data.loc[data['kode'] == kodeMitra, 'Nama'] = inputNama
                 data.to_csv('csv/dataMitra.csv',index=False)
                 print('Nama berhasil diubah')
                 time.sleep(2)
                 kelola_mitra()
             elif inputUser == 2:
-                inputLok = input('Masukkan lokasi baru : ')
+                inputLok = input('Masukkan lokasi baru : ').capitalize()
                 data.loc[data['kode'] == kodeMitra, 'Alamat'] = inputLok
                 data.to_csv('csv/dataMitra.csv', index=False)
                 print('Lokasi berhasil diubah...')
