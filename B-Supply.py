@@ -202,6 +202,8 @@ def halaman_admin():
             halaman_admin()
     except ValueError:
         print('Pilihan harus angka & tidak boleh kosong!')
+        time.sleep(2)
+        halaman_admin()
 
 def kelola_barang():
     os.system('cls')
@@ -209,26 +211,62 @@ def kelola_barang():
     data = pd.read_csv('csv/dataMitra.csv')
     data.index = range(1, len(data)+1)
     print(tabulate(data,headers='keys', tablefmt='grid'))
+    print('Ketik "EXIT" Untuk kembali')
     inputToko = input('Masukkan kode Toko : ').upper()
     if ((data['kode'] == inputToko) & (data['Status'] == 'Tersedia')).any():
         print('Toko terdeteksi, mengarahkan ke halaman...')
         time.sleep(2)
         menu_kelola_barang()
-    else:
-        print('Status tidak tersedia')
+    elif ((data['kode'] == inputToko) & (data['Status'] == 'Tidak Aktif')).any():
+        print('Toko berstatus tidak tersedia, silakan cek kembali')
         time.sleep(2)
+        kelola_barang()
+    elif inputToko == 'EXIT':
+        halaman_admin()
+    else:
+        print('Tidak ada toko dengan kode tersebut')
+        time.sleep(2)
+        kelola_barang()
 
 def menu_kelola_barang():
+    os.system('cls')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     print('|| ^^^ 	     	   SELAMAT DATANG            ^^^ ||')
     print('||--------- Apa yang ingin anda lakukan?---------||')
-    print('||                1. Tambah Barang               ||')
-    print('||                2. Edit harga                  ||')
+    print('||                1. Tampilkan Barang            ||')
+    print('||                2. Tambah Barang               ||')
     print('||                3. Edit harga                  ||')
-    print('||                4. Edit Stok                   ||')
-    print('||                5. Keluar                      ||')
+    print('||                4. Edit harga                  ||')
+    print('||                5. Edit Stok                   ||')
+    print('||                6. Keluar                      ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
+    inputUser = int(input('Masukkan pilihan : '))
+    if inputUser == 1:
+        tampilkan_barang()
+    elif inputUser == 2:
+        tambah_barang()
 
+def tampilkan_barang():
+    os.system('cls')
+    data = pd.read_csv(f'csv/toko/{inputToko}.csv')
+    data.index = range(1, len(data)+1)
+    print(tabulate(data,headers='keys', tablefmt='grid'))
+    input('Tekan ENTER Untuk Keluar >>>')
+    menu_kelola_barang()
+
+def tambah_barang():
+    os.system('cls')
+    print('='*40)
+    print('TAMBAH BARANG'.center(40))
+    print('='*40)
+    kodeBrg = input('Masukkan kode barang : ').upper()
+    namaBrg = input('Masukkan nama barang : ').capitalize()
+    hargaBrg = int(input('Tentukan harga barang : '))
+    stokBrg = int(input('Masukkan Jumlah Stok :'))
+    with open(f'csv/toko/{inputToko}.csv', 'a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([kodeBrg,namaBrg,hargaBrg,stokBrg])
+        input('Barang telah berhasil ditambahkan, ingin menambahkan barang lain? [y][n] :  ')
 
 def kelola_mitra():
     os.system('cls')
