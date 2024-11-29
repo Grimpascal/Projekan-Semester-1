@@ -334,6 +334,7 @@ def kelola_mitra_edit():
 4. Keluar''')
         try:
             inputUser = int(input('Masukkan pilihan : '))
+            tes = input('Anjay')
             if inputUser == 1:
                 inputNama = input('Masukkan nama baru : ')
                 data.loc[data['kode'] == kodeMitra, 'Nama'] = inputNama
