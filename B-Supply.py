@@ -276,7 +276,7 @@ def cek_pengiriman():
     data.index = range(1,len(data)+1)
     print(tabulate(data,headers='keys',tablefmt='grid'))
     input('Tekan ENTER untuk kembali >>>')
-    kelola_distribusi()
+    menu_kelola_distribusi()
 
 def kelola_barang():
     os.system('cls')
@@ -536,6 +536,8 @@ def kelola_user():
             tambah_user()
         elif inputUser == 4:
             tambah_admin()
+        elif inputUser == 5:
+            halaman_admin()
         else:
             print('Pilihan tidak ada')
             time.sleep(1.5)
@@ -688,11 +690,8 @@ def tambah_user():
     saldo = 0
     adminUser = input('Masukkan username : ')
     adminPass = input('Masukkan Password : ')
-    fileAda = os.path.exists('csv/dataUser.csv')
     with open('csv/dataUser.csv', 'a', newline='') as file:
         writer = csv.writer(file)
-        if not fileAda:
-            writer.writerow(['Username','Password'])
         writer.writerow([adminUser,adminPass,saldo])
         print('data User berhasil ditambahkan')
         input('tekan enter untuk kembali>>>')
