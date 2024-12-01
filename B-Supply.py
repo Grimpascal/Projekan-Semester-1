@@ -127,7 +127,6 @@ def register():
 
 def halaman_user():
     os.system('cls')
-    data = pd.read_csv('csv/dataUser.csv')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     print('|| ^^^ 	     	   SELAMAT DATANG           ^^^  ||')
     print('||--------- Apa yang ingin anda lakukan?---------||')
@@ -138,11 +137,37 @@ def halaman_user():
     print('||                5. Keluhan                     ||')
     print('||                6. Log Out                     ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
-    pilihan = int(input("Masukan Pilihan Anda : "))
+    try:
+        pilihan = int(input("Masukan Pilihan Anda : "))
+    except ValueError:
+        print('Harus angka & tidak boleh kosong')
+        halaman_user()
     if pilihan == 1:
         lihat_profil()
     elif pilihan == 2:
         pemesanan()
+    elif pilihan == 3:
+        cek_harga()
+    elif pilihan == 6:
+        utama()
+
+def cek_harga():
+    os.system('cls')
+    data = pd.read_csv('csv/dataMitra.csv')
+    data.index = range(1, len(data)+1)
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    print('\nKetik "EXIT" untuk kembali')
+    a = input('Masukkan kode toko yang ingin di cek : ').upper()
+    if a in data['kode']:
+        dataMitra = pd.read_csv(f'csv/toko/{a}.csv')
+        dataMitra.index = range(1,len(data)+1)
+        print(tabulate(data,headers='keys',tablefmt='grid'))
+    elif a == 'EXIT':
+        halaman_user()
+    else:
+        print('Kode tidak ditemukan')
+        time.sleep(2)
+        cek_harga()
 
 def pemesanan():
     os.system('cls')
@@ -190,24 +215,21 @@ def pesan():
     data = pd.read_csv(f'csv/toko/{kode}.csv')
     dataUser = pd.read_csv('csv/dataUser.csv')
     jml = int(input('Ingin membeli berapa barang : '))
+    if jml == 0:
+        print('Minimal pembelian adalah 1')
+        time.sleep(2)
+        pesan()
     for i in range(jml):
-        print('Ketik "M" untuk melihat kode barang')
+        os.system('cls')
+        data.index = range(1,len(data)+1)
+        print(tabulate(data,headers='keys',tablefmt='grid'))
         kodebrg = input('Masukkan kode barang yang akan dibeli : ').upper()
-        if kodebrg == 'M':
-            data.index = range(1,len(data)+1)
-            print(tabulate(data,headers='keys',tablefmt='grid'))
-            input('Ketik ENTER untuk kembali >>>')
-            pesan()
-        elif kodebrg in data['KodeBrg'].values:
+        if kodebrg in data['KodeBrg'].values:
             cek = data[data['KodeBrg'] == kodebrg]
             cekTrue = cek['Stok'].values[0]
             a = int(input('Masukkan jumlah yang ingin dibeli : '))
             if cekTrue < 1:
                 print('Barang tidak memiliki stok, semua akan dimulai ulang...')
-                time.sleep(2)
-                pesan()
-            elif a == 0:
-                print('Minimal pembelian adalah 1')
                 time.sleep(2)
                 pesan()
             else:
@@ -219,7 +241,8 @@ def pesan():
                 dataUser.to_csv('csv/dataUser.csv',index=False)
                 print('Anda berhasil membeli barang...')
                 time.sleep(2)
-                pemesanan_toko()
+                continue
+            pemesanan()
         else:
             print('Kode tidak ditemukan...')
             time.sleep(2)
