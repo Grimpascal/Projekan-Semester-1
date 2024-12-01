@@ -5,10 +5,10 @@ Fitur :
 
 *Menu User :
 -lihat profil [done]
--pemesanan
--cek harga
+-pemesanan [done]
+-cek harga [done]
 -histori pemesanan
--keluhan
+-keluhan [wait]
 -log out [done]
 
 *Menu Admin :
@@ -17,5 +17,5 @@ Fitur :
 -Kelola kendaraan [done]
 -Kelola distribusi barang [done]
 -Kelola pengguna [done]
--Laporan
+-Laporan [half done]
 -Log Out [done]
