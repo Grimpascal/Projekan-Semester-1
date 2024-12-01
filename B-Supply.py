@@ -141,6 +141,104 @@ def halaman_user():
     pilihan = int(input("Masukan Pilihan Anda : "))
     if pilihan == 1:
         lihat_profil()
+    elif pilihan == 2:
+        pemesanan()
+
+def pemesanan():
+    os.system('cls')
+    global kode
+    data = pd.read_csv(f'csv/dataMitra.csv')
+    data.index = range(1, len(data)+1)
+    print(tabulate(data, headers='keys',tablefmt='grid'))
+    kode = input('Masukkan kode toko yang ingin dibeli : ').upper()
+    if kode in data['kode'].values:
+        print('Toko tersedia, mengarahkan ke halaman pembelian...')
+        time.sleep(2)
+        pemesanan_toko()
+    else:
+        print('Toko tidak ditemukan...')
+        time.sleep(2)
+        pemesanan()
+
+def pemesanan_toko():
+    os.system('cls')
+    data2 = pd.read_csv('csv/dataUser.csv')
+    cek = data2.loc[data2['Username'] == userInputh]
+    saldo = cek['Saldo'].values[0]
+    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
+    print('|| ^^^ 	     	   SELAMAT DATANG           ^^^  ||')
+    print('||--------- Apa yang ingin anda lakukan?---------||')
+    print('||                1. Pesan                       ||')
+    print('||                2. Isi Saldo                   ||')
+    print('||                3. Kembali                     ||')
+    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
+    print(f'Saldo anda tersisa : {saldo}')
+    inputanUser = int(input('Masukkan Pilihan : '))
+    if inputanUser == 1:
+        pesan()
+    elif inputanUser == 2:
+        isi_saldo()
+    elif inputanUser == 3:
+        halaman_user()
+    else:
+        print('Pilihan tidak tersedia...')
+        time.sleep(2)
+        pemesanan_toko()
+
+def pesan():
+    os.system('cls')
+    data = pd.read_csv(f'csv/toko/{kode}.csv')
+    dataUser = pd.read_csv('csv/dataUser.csv')
+    jml = int(input('Ingin membeli berapa barang : '))
+    for i in range(jml):
+        print('Ketik "M" untuk melihat kode barang')
+        kodebrg = input('Masukkan kode barang yang akan dibeli : ').upper()
+        if kodebrg == 'M':
+            data.index = range(1,len(data)+1)
+            print(tabulate(data,headers='keys',tablefmt='grid'))
+            input('Ketik ENTER untuk kembali >>>')
+            pesan()
+        elif kodebrg in data['KodeBrg'].values:
+            cek = data[data['KodeBrg'] == kodebrg]
+            cekTrue = cek['Stok'].values[0]
+            a = int(input('Masukkan jumlah yang ingin dibeli : '))
+            if cekTrue < 1:
+                print('Barang tidak memiliki stok, semua akan dimulai ulang...')
+                time.sleep(2)
+                pesan()
+            elif a == 0:
+                print('Minimal pembelian adalah 1')
+                time.sleep(2)
+                pesan()
+            else:
+                cek1 = data[data['KodeBrg'] == kodebrg]
+                cekHarga = cek1['Harga'].values[0]
+                data.loc[data['KodeBrg'] == kodebrg, 'Stok'] -= a
+                dataUser.loc[dataUser['Username'] == userInputh, 'Saldo'] -= (cekHarga * a)
+                data.to_csv(f'csv/toko/{kode}.csv',index=False)
+                dataUser.to_csv('csv/dataUser.csv',index=False)
+                print('Anda berhasil membeli barang...')
+                time.sleep(2)
+                pemesanan_toko()
+        else:
+            print('Kode tidak ditemukan...')
+            time.sleep(2)
+            pesan()
+            
+def isi_saldo():
+    os.system('cls')
+    data = pd.read_csv('csv/dataUser.csv')
+    print('='*40)
+    print('ISI SALDO'.center(40))
+    print('='*40)
+    isiSaldo = int(input('Masukkan jumlah saldo yang ingin diisi : '))
+    print('Sedang memverifikasi pembayaran...')
+    time.sleep(2)
+    data.loc[data['Username'] == userInputh, 'Saldo'] += isiSaldo
+    data.to_csv('csv/dataUser.csv',index=False)
+    print('Selamat saldo anda telah terisi...')
+    time.sleep(2)
+    pemesanan_toko()
 
 def lihat_profil():
     os.system('cls')
