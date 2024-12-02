@@ -1,0 +1,30 @@
+program distributor sampah
+
+ada 2 role : User dan Admin
+
+MENU ADMIN :
+-Kelola Mitra
+    - Cek data Mitra
+    - Tambah Mitra
+    - Hapus Mitra
+    - Edit Mitra
+-Kelola Barang :
+    - Menampilkan barang (sesuai toko)
+    - Tambah barang
+    - Edit barang (edit nama barang, harga dan stok)
+- Kelola kendaraan
+    - Cek kendaraan
+    - Tambah kendaraan
+    - edit kendaraan
+    - hapus kendaraan
+- Kelola distribusi barang
+    - Cek jadwal pengiriman barang
+- Kelola Pengguna
+    - Cek data pengguna
+    - Tambah pengguna
+    - Hapus pengguna
+    - Tambah admin
+- Laporan
+    - Laporan keluhan User
+
+MENU USER :

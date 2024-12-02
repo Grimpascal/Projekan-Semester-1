@@ -116,6 +116,7 @@ def register():
         time.sleep(2)
         register()
     else:
+        global hari
         saldo = 0
         hari = datetime.date.today()
         with open('csv/dataUser.csv', mode='a', newline='') as file:
@@ -242,6 +243,9 @@ def pesan():
                 dataUser.loc[dataUser['Username'] == userInputh, 'Saldo'] -= (cekHarga * a)
                 data.to_csv(f'csv/toko/{kode}.csv',index=False)
                 dataUser.to_csv('csv/dataUser.csv',index=False)
+                # with open('csv/dataPengiriman.csv', 'a',newline='') as file:
+                #     writer = csv.writer(file)
+                #     writer.writerow([kode,userInputh,hari,])
                 print('Anda berhasil membeli barang...')
                 time.sleep(2)
                 continue
@@ -274,9 +278,11 @@ def lihat_profil():
     data = pd.read_csv('csv/dataUser.csv')
     cek = data.loc[data['Username'] == userInputh]
     saldo = cek['Saldo'].values[0]
+    cekpw = data.loc[data['Username'] == userInputh]
+    pw = cekpw['Password'].values[0]
     print('BERIKUT INFORMASI ANDA')
     print(f'Username anda adalah = {userInputh}')
-    print(f'Password anda adalah = {userPassh}')
+    print(f'Password anda adalah = {pw}')
     print(f'Sisa saldo anda adalah = Rp.{saldo}')
     print('='*40)
     input1 = input('Apakah Anda ingin mengubah password? (y/n) ')
