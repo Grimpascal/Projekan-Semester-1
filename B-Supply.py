@@ -184,6 +184,8 @@ def pemesanan():
         print('Toko tersedia, mengarahkan ke halaman pembelian...')
         time.sleep(2)
         pemesanan_toko()
+    elif kode == 'EXIT':
+        halaman_user()
     else:
         print('Toko tidak ditemukan...')
         time.sleep(2)
@@ -248,8 +250,8 @@ def pesan():
                 #     writer.writerow([kode,userInputh,hari,])
                 print('Anda berhasil membeli barang...')
                 time.sleep(2)
+                pemesanan()
                 continue
-            pemesanan()
         else:
             print('Kode tidak ditemukan...')
             time.sleep(2)
