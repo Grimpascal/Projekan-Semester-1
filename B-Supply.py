@@ -970,6 +970,7 @@ def tambah_admin():
     print('Anda masuk dalam menu tambah admin')
     print('Silahkan masukan data admin yang akan ditambahkan')
     adminUser = input('Masukkan username : ')
+    adminPass = input('Masukkan Password : ')
     fileAda = os.path.exists('csv/dataAdmin.csv')
     with open('csv/dataAdmin.csv', 'a', newline='') as file:
         writer = csv.writer(file)
@@ -996,15 +997,11 @@ def laporan_admin():
     print('LAPORAN'.center(40))
     print('='*40)
     print('Pilih laporan apa yang ingin di tampilkan')
-    print('1. Laporan Mitra')
-    print('2. Laporan keluhan')
-    print('3. Kembali')
+    print('1. Laporan keluhan\n2. Kembali')
     pilihan = int(input('Masukkan pilihan : '))
     if pilihan == 1:
-        laporan_mitra()
-    elif pilihan == 2:
         laporan_keluhan()
-    elif pilihan == 3:
+    elif pilihan == 2:
         halaman_admin()
     else:
         print('Tidak ada di pilihan...')
@@ -1018,8 +1015,5 @@ def laporan_keluhan():
     print(tabulate(data,headers='keys',tablefmt='grid'))
     input('tekan ENTER untuk kembali >>>')
     laporan_admin()
-
-def laporan_mitra():
-    os.system('cls')
 
 utama()
