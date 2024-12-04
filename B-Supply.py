@@ -167,10 +167,12 @@ def lihat_profil():
     data = pd.read_csv('csv/dataUser.csv')
     cek = data.loc[data['Username'] == userInputh]
     saldo = cek['Saldo'].values[0]
+    tanggal = cek['Tanggal Daftar'].values[0]
     print('BERIKUT INFORMASI ANDA')
     print(f'Username anda adalah = {userInputh}')
     print(f'Password anda adalah = {userPassh}')
     print(f'Sisa saldo anda adalah = Rp.{saldo}')
+    print(f'Akun anda dibuat pada tanggal {tanggal}')
     print('='*40)
     input1 = input('Apakah Anda ingin mengubah password? (y/n) ')
     if input1 == 'y':
@@ -178,6 +180,9 @@ def lihat_profil():
         b = input('Masukkan Password baru lagi :')
         if a == b:
             data.loc[data['Username'] == userInputh, 'Password'] = b
+            os.system('cls')
+            print('Sedang mengubah password anda...')
+            time.sleep(2)
             data.to_csv('csv/dataUser.csv', index=False)
             print('Password berhasil diubah')
             time.sleep(2)
@@ -222,15 +227,20 @@ def pemesanan_toko():
     print('||                3. Kembali                     ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     print(f'Saldo anda tersisa : {saldo}')
-    inputanUser = int(input('Masukkan Pilihan : '))
-    if inputanUser == 1:
-        pesan()
-    elif inputanUser == 2:
-        isi_saldo()
-    elif inputanUser == 3:
-        halaman_user()
-    else:
-        print('Pilihan tidak tersedia...')
+    try:
+        inputanUser = int(input('Masukkan Pilihan : '))
+        if inputanUser == 1:
+            pesan()
+        elif inputanUser == 2:
+            isi_saldo()
+        elif inputanUser == 3:
+            halaman_user()
+        else:
+            print('Pilihan tidak tersedia...')
+            time.sleep(2)
+            pemesanan_toko()
+    except ValueError:
+        print('Pilihan tidak valid...')
         time.sleep(2)
         pemesanan_toko()
 
@@ -300,13 +310,64 @@ def isi_saldo():
     print('ISI SALDO'.center(40))
     print('='*40)
     isiSaldo = int(input('Masukkan jumlah saldo yang ingin diisi : '))
-    print('Sedang memverifikasi pembayaran...')
-    time.sleep(2)
-    data.loc[data['Username'] == userInputh, 'Saldo'] += isiSaldo
-    data.to_csv('csv/dataUser.csv',index=False)
-    print('Selamat saldo anda telah terisi...')
-    time.sleep(2)
-    pemesanan_toko()
+    if isiSaldo < 5000:
+        print('Minimal saldo yang dapat diisi adalah 5000')
+        time.sleep(2)
+        isi_saldo()
+    os.system('cls')
+    print('''Ingin membayar lewat apa :
+1. Ewallet
+2. Transfer Bank''')
+    pilih = int(input('Masukkan pilihan : '))
+    if pilih == 1:
+        os.system('cls')
+        print('''Pilih Metode pembayaran :
+1. Dana
+2. Gopay
+3. Ovo
+4. Shopeepay''')
+        a = int(input('Masukkan pilihan : '))
+        if a == 1 or a == 2 or a == 3 or a == 4:
+            os.system('cls')
+            print('Sedang memproses...')
+            time.sleep(2)
+            data.loc[data['Username'] == userInputh, 'Saldo'] += isiSaldo
+            data.to_csv('csv/dataUser.csv',index=False)
+            print('Selamat saldo anda telah terisi...')
+            time.sleep(2)
+            pemesanan_toko()
+        else:
+            print('Metode pembayaran tidak tersedia...')
+            time.sleep(2)
+            halaman_user()
+    elif pilih == 2:
+        os.system('cls')
+        print('''Pilih Bank :
+1. BRI
+2. BNI
+3. Seabank
+4. Mandiri
+5. BCA
+6. BSI''')
+        a = int(input('Masukkan pilihan : '))
+        if a == 1 or a == 2 or a == 3 or a == 4 or a == 5 or a == 6:
+            os.system('cls')
+            print('Sedang memproses...')
+            time.sleep(2)
+            data.loc[data['Username'] == userInputh, 'Saldo'] += isiSaldo
+            data.to_csv('csv/dataUser.csv',index=False)
+            print('Selamat saldo anda telah terisi...')
+            time.sleep(2)
+            pemesanan_toko()
+        else:
+            print('Bank tidak tersedia...')
+            time.sleep(2)
+            halaman_user()
+    else:
+        print('Pilihan tidak tersedia...')
+        time.sleep(2)
+        halaman_user()
+
 
 def cek_harga():
     os.system('cls')
