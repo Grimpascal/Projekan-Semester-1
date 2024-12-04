@@ -19,7 +19,7 @@ def utama():
     while True:
         os.system('cls')
         print(fon)
-        print("\nPilih jenis akun untuk login:")    #fungsi \n untuk membuat baris baru
+        print("\nPilih jenis akun untuk login:")
         print("[1] Admin")
         print("[2] User")
         print("-" * 40)
@@ -40,13 +40,13 @@ def utama():
 def login_admin():
     os.system('cls')
     print('='*40)
-    print('LOGIN ADMIN'.center(40))  #fungsi center() digunakan untuk mengatur posisi teks di tengah
+    print('LOGIN ADMIN'.center(40))  
     print('='*40)
-    inputUser = input("Masukkan username Anda: ").rstrip().lower() # rstrip() untuk menghilangkan spasi di akhir string, lower() untuk mengubah semua huruf menjadi kecil
+    inputUser = input("Masukkan username Anda: ").rstrip().lower()
     inputPass = input('Masukkan password Anda: ').rstrip().lower()
-    data = pd.read_csv('csv/dataAdmin.csv')     #untuk membaca csv
-    user = data[(data['Username'] == inputUser) & (data['Password'] == inputPass)]  #untuk mencari data yang sesuai dengan input user (menyocokkan dengan data di csv)
-    if not user.empty: #jika data tidak kosong
+    data = pd.read_csv('csv/dataAdmin.csv')
+    user = data[(data['Username'] == inputUser) & (data['Password'] == inputPass)]
+    if not user.empty:
         print("\nSelamat datang, Anda berhasil login sebagai Admin...")
         time.sleep(2)
         halaman_admin()
@@ -73,7 +73,7 @@ def login_user2():
 
 def login_user():
     os.system('cls')
-    global userInputh   #global untuk mengakses variabel di luar fungsi
+    global userInputh
     global userPassh    
     print("=" *40)
     print(" LOGIN USER ".center(40))
@@ -81,15 +81,15 @@ def login_user():
     userInputh = input("Masukkan username: ").rstrip().lower()
     userPassh = input("Masukkan password: ").rstrip().lower()
     print('='*40)
-    data = pd.read_csv('csv/dataUser.csv') #untuk membaca csv
-    user = data[(data['Username'] == userInputh) & (data['Password'] == userPassh)] #untuk mencari data yang sesuai dengan input user (menyocokkan dengan data
+    data = pd.read_csv('csv/dataUser.csv')
+    user = data[(data['Username'] == userInputh) & (data['Password'] == userPassh)]
     if not user.empty: 
         print("Selamat datang, Anda berhasil login!")
         time.sleep(2)
         halaman_user()
     else:
         os.system('cls')
-        print(f'Pengguna dengan username [{userInputh}], Password [{userPassh}] tidak ditemukan.')  #untuk menampilkan pesan error
+        print(f'Pengguna dengan username [{userInputh}], Password [{userPassh}] tidak ditemukan.')
         print("Ingin mendaftar atau mencoba lagi?")
         print('-'*40)
         print("[Enter] untuk mencoba lagi")
@@ -103,24 +103,28 @@ def login_user():
             print("\nInput tidak sesuai, silakan coba lagi.")
             time.sleep(2)
 
-def register():     #program register
+def register():
     os.system('cls')
     print("=" * 40)
     print(" REGISTRASI AKUN ".center(40))
     print("=" * 40)
-    username = input("Masukkan username: ").lower() #lower() untuk mengubah semua huruf menjadi kecil
+    username = input("Masukkan username: ").lower()
     password = input("Masukkan password: ").lower()
+    if username == '' or password == '':
+        print('Tidak boleh ada yang kosong!')
+        time.sleep(2)
+        register()
     data = pd.read_csv('csv/dataUser.csv')
-    if username in data['Username'].values: #untuk mengecek apakah username sudah ada atau belum
+    if username in data['Username'].values:
         print("Username sudah digunakan, silakan coba lagi.")
         time.sleep(2)
         register()
     else:
         saldo = 0
-        hari = datetime.date.today() #untuk mendapatkan tanggal hari ini
-        with open('csv/dataUser.csv', mode='a', newline='') as file: #untuk menambahkan data baru ke csv
-            writer = csv.writer(file)      #untuk menulis data ke csv
-            writer.writerow([username, password, saldo, hari])  #untuk menulis data baru ke csv
+        hari = datetime.date.today()
+        with open('csv/dataUser.csv', mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([username, password, saldo, hari])
             print("\nSelamat, Anda telah berhasil terdaftar!")
             time.sleep(2)
         login_user()
@@ -137,9 +141,9 @@ def halaman_user():
     print('||                5. Keluhan                     ||')
     print('||                6. Log Out                     ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
-    try:    #untuk mencoba pilihan yang dipilih
+    try:
         pilihan = int(input("Masukan Pilihan Anda : "))
-    except ValueError:      #untuk memunculkan pesan error jika input bukan angka
+    except ValueError:
         print('Harus angka & tidak boleh kosong')
         halaman_user()
     if pilihan == 1:
@@ -161,8 +165,8 @@ def lihat_profil():
     print('LIHAT PROFIL'.center(40))
     print('='*40)
     data = pd.read_csv('csv/dataUser.csv')
-    cek = data.loc[data['Username'] == userInputh] #untuk mencari data username yang sesuai dengan userinputh
-    saldo = cek['Saldo'].values[0]  #untuk mengecek saldo user
+    cek = data.loc[data['Username'] == userInputh]
+    saldo = cek['Saldo'].values[0]
     print('BERIKUT INFORMASI ANDA')
     print(f'Username anda adalah = {userInputh}')
     print(f'Password anda adalah = {userPassh}')
@@ -173,7 +177,7 @@ def lihat_profil():
         a = input('Masukkan Password baru :')
         b = input('Masukkan Password baru lagi :')
         if a == b:
-            data.loc[data['Username'] == userInputh, 'Password'] = b #untuk mengubah password user
+            data.loc[data['Username'] == userInputh, 'Password'] = b
             data.to_csv('csv/dataUser.csv', index=False)
             print('Password berhasil diubah')
             time.sleep(2)
@@ -193,10 +197,10 @@ def pemesanan():
     os.system('cls')
     global kode
     data = pd.read_csv('csv/dataMitra.csv') 
-    data.index = range(1, len(data)+1)  #supaya indeks pada pandas bisa dimulai dri 1 dan menghasilkan urutan bilangan dari 1 hingga jumlah baris dalam DataFrame.
+    data.index = range(1, len(data)+1)
     print(tabulate(data, headers='keys',tablefmt='grid'))
-    kode = input('Masukkan kode toko yang ingin dibeli : ').upper() #upper() untuk mengubah semua huruf menjadi huruf besar
-    if kode in data['kode'].values: #values untuk mengecek nilai pada kolom kode
+    kode = input('Masukkan kode toko yang ingin dibeli : ').upper()
+    if kode in data['kode'].values:
         print('Toko tersedia, mengarahkan ke halaman pembelian...')
         time.sleep(2)
         pemesanan_toko()
@@ -208,8 +212,8 @@ def pemesanan():
 def pemesanan_toko():
     os.system('cls')
     data2 = pd.read_csv('csv/dataUser.csv')
-    cek = data2.loc[data2['Username'] == userInputh]    #untuk mengecek lokasi data user yang sesuai dengan username yang dimasukkan
-    saldo = cek['Saldo'].values[0]  #untuk mengecek saldo user yang sesuai dengan username yang dimasukkan
+    cek = data2.loc[data2['Username'] == userInputh]
+    saldo = cek['Saldo'].values[0]
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     print('|| ^^^ 	     	   SELAMAT DATANG           ^^^  ||')
     print('||--------- Apa yang ingin anda lakukan?---------||')
@@ -232,7 +236,7 @@ def pemesanan_toko():
 
 def pesan():
     os.system('cls')
-    data = pd.read_csv(f'csv/toko/{kode}.csv')  # untuk membaca csv yang sesuai dengan kode toko yang dipilih
+    data = pd.read_csv(f'csv/toko/{kode}.csv')
     dataUser = pd.read_csv('csv/dataUser.csv')
     jml = int(input('Ingin membeli berapa barang : '))
     if jml == 0:
@@ -242,16 +246,16 @@ def pesan():
     for i in range(jml):
         print('Ketik "M" untuk melihat kode barang')
         os.system('cls')
-        data.index = range(1,len(data)+1)   #untuk mengubah indeks pada pandas agar dimulai dari 1
+        data.index = range(1,len(data)+1)
         print(tabulate(data,headers='keys',tablefmt='grid'))
-        kodebrg = input('Masukkan kode barang yang akan dibeli : ').upper() #upper() untuk mengubah semua huruf menjadi huruf besar
+        kodebrg = input('Masukkan kode barang yang akan dibeli : ').upper()
         if kodebrg == 'M':
             data.index = range(1,len(data)+1)
             print(tabulate(data,headers='keys',tablefmt='grid'))
             input('Ketik ENTER untuk kembali >>>')
             pesan()
         elif kodebrg in data['KodeBrg'].values:
-            cek = data[data['KodeBrg'] == kodebrg] #untuk mengecek data barang yang sesuai dengan kode barang yang dimasukkan
+            cek = data[data['KodeBrg'] == kodebrg]
             cekTrue = cek['Stok'].values[0]
             cek2 = dataUser[dataUser['Username'] == userInputh]
             cekSaldo = cek2['Saldo'].values[0]
@@ -273,12 +277,12 @@ def pesan():
                 time.sleep(2)
                 pesan()
             else:
-                cek1 = data[data['KodeBrg'] == kodebrg] #untuk mengecek data barang yang sesuai dengan kode barang yang dimasukkan
+                cek1 = data[data['KodeBrg'] == kodebrg]
                 cekHarga = cek1['Harga'].values[0]  
-                data.loc[data['KodeBrg'] == kodebrg, 'Stok'] -= a #untuk mengurangi stok barang yang sesuai dengan kode barang yang dimasukkan
-                dataUser.loc[dataUser['Username'] == userInputh, 'Saldo'] -= (cekHarga * a)  #untuk mengurangi saldo user yang sesuai dengan username yang dimasukkan
-                data.to_csv(f'csv/toko/{kode}.csv',index=False) #untuk menyimpan perubahan data ke csv
-                dataUser.to_csv('csv/dataUser.csv',index=False) #index=False untuk menghilangkan index atau koma di awal csv
+                data.loc[data['KodeBrg'] == kodebrg, 'Stok'] -= a
+                dataUser.loc[dataUser['Username'] == userInputh, 'Saldo'] -= (cekHarga * a)
+                data.to_csv(f'csv/toko/{kode}.csv',index=False)
+                dataUser.to_csv('csv/dataUser.csv',index=False)
                 print('Anda berhasil membeli barang...')
                 time.sleep(2)
                 pemesanan_toko()
@@ -298,7 +302,7 @@ def isi_saldo():
     isiSaldo = int(input('Masukkan jumlah saldo yang ingin diisi : '))
     print('Sedang memverifikasi pembayaran...')
     time.sleep(2)
-    data.loc[data['Username'] == userInputh, 'Saldo'] += isiSaldo #untuk menambahkan saldo user yang sesuai dengan username yang dimasukkan
+    data.loc[data['Username'] == userInputh, 'Saldo'] += isiSaldo
     data.to_csv('csv/dataUser.csv',index=False)
     print('Selamat saldo anda telah terisi...')
     time.sleep(2)
@@ -307,14 +311,16 @@ def isi_saldo():
 def cek_harga():
     os.system('cls')
     data = pd.read_csv('csv/dataMitra.csv')
-    data.index = range(1, len(data)+1)  #supaya indeks pada pandas bisa dimulai dri 1 dan menghasilkan urutan bilangan dari 1 hingga jumlah baris dalam DataFrame. 
-    print(tabulate(data,headers='keys',tablefmt='grid')) #untuk menampilkan data dalam bentuk tabel
+    data.index = range(1, len(data)+1) 
+    print(tabulate(data,headers='keys',tablefmt='grid'))
     print('\nKetik "EXIT" untuk kembali')
-    a = input('Masukkan kode toko yang ingin di cek : ').upper()    #upper() untuk mengubah semua huruf menjadi huruf besar
-    if a in data['kode']:   #jika kode toko yang dimasukkan ada di dalam data
-        dataMitra = pd.read_csv(f'csv/toko/{a}.csv')    #berfungsi untuk membaca csv yang sesuai dengan kode toko yang dimasukkan
-        dataMitra.index = range(1,len(data)+1)   #supaya indeks pada pandas bisa dimulai dri 1 dan menghasilkan urutan bilangan dari 1 hingga jumlah baris dalam DataFrame.
+    a = input('Masukkan kode toko yang ingin di cek : ').upper()
+    if a in data['kode'].values:
+        dataMitra = pd.read_csv(f'csv/toko/{a}.csv')
+        dataMitra.index = range(1,len(data)+1)
         print(tabulate(data,headers='keys',tablefmt='grid'))
+        input('Ketik ENTER untuk kembali >>> ')
+        halaman_user()
     elif a == 'EXIT':
         halaman_user()
     else:
@@ -962,12 +968,12 @@ def laporan_admin():
 def laporan_keluhan():
     os.system('cls')
     data = pd.read_csv('csv/keluhanUser.csv')
-    data.index = range(1, len(data)+1) # Untuk mengubah index menjadi angka 1, 2, 3, dst
+    data.index = range(1, len(data)+1)
     print(tabulate(data,headers='keys',tablefmt='grid'))
     input('tekan ENTER untuk kembali >>>')
     laporan_admin()
 
 def laporan_mitra():
-    print('sek')
+    os.system('cls')
 
 utama()
