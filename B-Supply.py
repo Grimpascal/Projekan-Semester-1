@@ -168,9 +168,10 @@ def lihat_profil():
     cek = data.loc[data['Username'] == userInputh]
     saldo = cek['Saldo'].values[0]
     tanggal = cek['Tanggal Daftar'].values[0]
+    pw = cek['Password'].values[0]
     print('BERIKUT INFORMASI ANDA')
     print(f'Username anda adalah = {userInputh}')
-    print(f'Password anda adalah = {userPassh}')
+    print(f'Password anda adalah = {pw}')
     print(f'Sisa saldo anda adalah = Rp.{saldo}')
     print(f'Akun anda dibuat pada tanggal {tanggal}')
     print('='*40)
@@ -288,11 +289,24 @@ def pesan():
                 pesan()
             else:
                 cek1 = data[data['KodeBrg'] == kodebrg]
-                cekHarga = cek1['Harga'].values[0]  
+                cekHarga = cek1['Harga'].values[0]
+                cekNama = data['NamaBrg'].values[0]
+                hari = datetime.date.today()
                 data.loc[data['KodeBrg'] == kodebrg, 'Stok'] -= a
                 dataUser.loc[dataUser['Username'] == userInputh, 'Saldo'] -= (cekHarga * a)
                 data.to_csv(f'csv/toko/{kode}.csv',index=False)
                 dataUser.to_csv('csv/dataUser.csv',index=False)
+                if not os.path.exists(f'csv/histori/{userInputh}.csv'):
+                    with open(f'csv/histori/{userInputh}.csv','w',newline='') as file:
+                        writer = csv.writer(file)
+                        writer.writerow(['kode','NamaBrg','Jumlah','Harga','Tanggal'])
+                    with open(f'csv/histori/{userInputh}.csv','a',newline='') as file:
+                        writer = csv.writer(file)
+                        writer.writerow([kodebrg,cekNama,a,cekHarga * a,hari])
+                elif os.path.exists(f'csv/histori/{userInputh}.csv'):
+                    with open(f'csv/histori/{userInputh}.csv','a',newline='') as file:
+                        writer = csv.writer(file)
+                        writer.writerow([kodebrg,cekNama,a,cekHarga * a,hari])
                 print('Anda berhasil membeli barang...')
                 time.sleep(2)
                 pemesanan_toko()
@@ -391,6 +405,13 @@ def cek_harga():
 
 def histori_pemesanan():
     os.system('cls')
+    data = pd.read_csv(f'csv/histori/{userInputh}.csv')
+    data.index = range(1, len(data)+1)
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    total = data['Harga'].values.sum()
+    print(f'Total pembelian kamu adalah {total}')
+    input('Tekan ENTER untuk kembali >>> ')
+    halaman_user()
     
 
 def keluhan():
@@ -603,7 +624,7 @@ def kelola_barang():
     print(tabulate(data,headers='keys', tablefmt='grid'))
     print('Ketik "EXIT" Untuk kembali')
     inputToko = input('Masukkan kode Toko : ').upper()
-    if ((data['kode'] == inputToko) & (data['Status'] == 'Tersedia')).any():    #untuk mengecek apakah kode toko sesuai dengan dengan inputan user dan status toko masih tersedia
+    if ((data['kode'] == inputToko) & (data['Status'] == 'Tersedia')).any():
         print('Toko terdeteksi, mengarahkan ke halaman...')
         time.sleep(2)
         menu_kelola_barang()
@@ -656,16 +677,16 @@ def tambah_barang():
     for i in range(jmlTambah):
         os.system('cls')
         kodeBrg = input('Masukkan kode barang : ').upper()
-        namaBrg = input('Masukkan nama barang : ').capitalize() #capitalize() untuk mengubah huruf pertama menjadi huruf besar
+        namaBrg = input('Masukkan nama barang : ').capitalize()
         hargaBrg = int(input('Tentukan harga barang : '))
         stokBrg = int(input('Masukkan Jumlah Stok :'))
-        if kodeBrg in data['KodeBrg'].values:  #untuk mengecek kode barang sudah ada atau belum
+        if kodeBrg in data['KodeBrg'].values:
             print('Kode sudah ada, pilih kode lain!')
             time.sleep(2)
         else:
-            with open(f'csv/toko/{inputToko}.csv', 'a', newline='') as file:    #untuk menambahkan data ke csv
-                writer = csv.writer(file)   #untuk menulis data ke csv
-                writer.writerow([kodeBrg,namaBrg,hargaBrg,stokBrg])     #untuk menuliskan data baru ke csv
+            with open(f'csv/toko/{inputToko}.csv', 'a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([kodeBrg,namaBrg,hargaBrg,stokBrg])
             print('Barang berhasil ditambahkan...')
             time.sleep(2)
     menu_kelola_barang()
@@ -675,7 +696,7 @@ def edit_barang():
     print("=" * 40)
     print(" PILIH OPSI ".center(40, "="))
     print("=" * 40)
-    print("1. Ubah Nama Barang".ljust(30))  #ljust untuk mengatur posisi teks ke kiri
+    print("1. Ubah Nama Barang".ljust(30))
     print("2. Ubah Harga Barang".ljust(30))
     print("3. Tambah Stok".ljust(30))
     print("4. Kurangi Stok".ljust(30))
@@ -871,7 +892,6 @@ def edit_kendaraan():
                 data.loc[data['kode'] == kode, 'Jenis'] = jenis_baru
             if status_baru:
                 data.loc[data['kode'] == kode, 'Status'] = status_baru
-
             data.to_csv('csv/dataKendaraan.csv', index=False)
             print("Data kendaraan berhasil di tambahkan")
         else:
@@ -898,7 +918,6 @@ def hapus_kendaraan():
         time.sleep(2)
         kelola_kendaraan()
     input("Tekan enter untuk kembali...")
-
     kelola_kendaraan()
 
 def menu_kelola_distribusi():
