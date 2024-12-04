@@ -309,13 +309,13 @@ def pesan():
                         writer.writerow([kodebrg,cekNama,a,cekHarga * a,hari])
                 print('Anda berhasil membeli barang...')
                 time.sleep(2)
-                pemesanan_toko()
-                continue
-            pemesanan()
         else:
             print('Kode tidak ditemukan...')
             time.sleep(2)
             pesan()
+
+    input('ketik ENTER untuk kembali >>> ')
+    pemesanan_toko()
 
 def isi_saldo():
     os.system('cls')
