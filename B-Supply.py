@@ -639,7 +639,8 @@ def menu_kelola_barang():
     print('||                1. Tampilkan Barang            ||')
     print('||                2. Tambah Barang               ||')
     print('||                3. Edit barang                 ||')
-    print('||                4. Keluar                      ||')
+    print('||                4. Edit barang                 ||')
+    print('||                5. Keluar                      ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     inputUser = int(input('Masukkan pilihan : '))
     if inputUser == 1:
@@ -648,8 +649,10 @@ def menu_kelola_barang():
         tambah_barang()
     elif inputUser == 3:
         edit_barang()
-    elif inputUser == 4:
+    elif inputUser == 5:
         halaman_admin()
+    elif inputUser == 4:
+        hapus_barang()
     else:
         print('Tidak ada dipilihan...')
         time.sleep(2)
