@@ -438,10 +438,9 @@ def halaman_admin():
     print('||                1. Kelola Mitra                ||')
     print('||                2. Kelola Barang               ||')
     print('||                3. Kelola kendaraan            ||')
-    print('||                4. Kelola distribusi barang    ||')
-    print('||                5. Kelola Pengguna             ||')
-    print('||                6. Laporan                     ||')
-    print('||                7. Log Out                     ||')
+    print('||                4. Kelola Pengguna             ||')
+    print('||                5. Laporan                     ||')
+    print('||                6. Log Out                     ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     try:
         pilihan = int(input("Masukan Pilihan Anda : "))
@@ -452,12 +451,10 @@ def halaman_admin():
         elif pilihan == 3:
             kelola_kendaraan()
         elif pilihan == 4:
-            menu_kelola_distribusi()
-        elif pilihan == 5:
             kelola_user()
-        elif pilihan == 6:
+        elif pilihan == 5:
             laporan_admin()
-        elif pilihan == 7:
+        elif pilihan == 6:
             utama()
         else:
             print('Pilihan tidak ada')
@@ -920,36 +917,6 @@ def hapus_kendaraan():
     input("Tekan enter untuk kembali...")
     kelola_kendaraan()
 
-def menu_kelola_distribusi():
-    os.system('cls')
-    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
-    print('|| ^^^ 	     	   SELAMAT DATANG            ^^^ ||')
-    print('||--------- Apa yang ingin anda lakukan?---------||')
-    print('||                1. Cek Pengiriman              ||')
-    print('||                2. Kembali                     ||')
-    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
-    try:
-        pilihan = int(input('Masukkan pilihan : '))
-    except ValueError:
-        print('Pilihan harus angka & tidak boleh kosong!')
-        time.sleep(2)
-        menu_kelola_distribusi()
-    if pilihan == 1:
-        cek_pengiriman()
-    elif pilihan == 2:
-        halaman_admin()
-    else:
-        print('Tidak ada di pilihan...')
-        time.sleep(2)
-        menu_kelola_distribusi()
-
-def cek_pengiriman():
-    os.system('cls')
-    data = pd.read_csv('csv/dataPengiriman.csv')
-    data.index = range(1,len(data)+1)
-    print(tabulate(data,headers='keys',tablefmt='grid'))
-    input('Tekan ENTER untuk kembali >>>')
-    menu_kelola_distribusi()
 
 def kelola_user():
     os.system('cls')    
