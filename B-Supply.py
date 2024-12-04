@@ -639,7 +639,7 @@ def menu_kelola_barang():
     print('||                1. Tampilkan Barang            ||')
     print('||                2. Tambah Barang               ||')
     print('||                3. Edit barang                 ||')
-    print('||                4. Edit barang                 ||')
+    print('||                4. Hapus barang                 ||')
     print('||                5. Keluar                      ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     inputUser = int(input('Masukkan pilihan : '))
@@ -672,9 +672,9 @@ def hapus_barang():
     data.index = range(1,len(data)+1)
     print(tabulate(data,headers='keys',tablefmt='grid'))
     kode = input('Masukkan kode barang yang ingin dihapus : ').upper()
-    if kode in data['kodeBrg'].values:
-        data = data[data['kodeBrg'] != kode]
-        data.to_csv(f'csv/{inputToko}.csv')
+    if kode in data['KodeBrg'].values:
+        data = data[data['KodeBrg'] != kode]
+        data.to_csv(f'csv/toko/{inputToko}.csv')
     print('Berhasil menghapus barang...')
     time.sleep(2)
     menu_kelola_barang()
