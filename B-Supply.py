@@ -968,6 +968,6 @@ def laporan_keluhan():
     laporan_admin()
 
 def laporan_mitra():
-
+    print('sek')
 
 utama()
