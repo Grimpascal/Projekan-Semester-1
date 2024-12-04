@@ -150,6 +150,8 @@ def halaman_user():
         cek_harga()
     elif pilihan == 4:
         histori_pemesanan()
+    elif pilihan == 5:
+        keluhan()
     elif pilihan == 6:
         utama()
 
@@ -326,14 +328,16 @@ def histori_pemesanan():
 
 def keluhan():
     os.system('cls')
-    print('Anda masuk kedalam menu user')
-    print('Silahkan masukkan keluhan anda')
-    adminUser = input('Masukkan keluhan : ')
-    data = pd.read_csv('csv/dataKeluhan.csv')
-    with open('csv/dataKeluhan.csv', 'a', newline='') as file:
+    hari = datetime.date.today()
+    print("="*50)
+    print('FORMULIR KELUHAN'.center(50))
+    print("="*50)
+    keluhUser = input('Masukkan keluhan anda : ')
+    data = pd.read_csv('csv/keluhanUser.csv')
+    with open('csv/keluhanUser.csv', 'a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([adminUser])
-        data.to_csv('csv/dataKeluhan.csv', index=False)
+        writer.writerow([userInputh,keluhUser,hari])
+        data.to_csv('csv/keluhanUser.csv', index=False)
         print('Keluhan telah disampaikan')
         input('tekan enter untuk kembali')
     halaman_user()
@@ -913,8 +917,6 @@ def tambah_admin():
     fileAda = os.path.exists('csv/dataAdmin.csv')
     with open('csv/dataAdmin.csv', 'a', newline='') as file:
         writer = csv.writer(file)
-        if not fileAda:
-            writer.writerow(['username','Password'])
         writer.writerow([adminUser,adminPass])
         print('data Admin berhasil ditambahkan')
         print('tekan enter untuk kembali>>>')
