@@ -313,7 +313,6 @@ def pesan():
             print('Kode tidak ditemukan...')
             time.sleep(2)
             pesan()
-
     input('ketik ENTER untuk kembali >>> ')
     pemesanan_toko()
 
@@ -662,6 +661,19 @@ def tampilkan_barang():
     data.index = range(1, len(data)+1)
     print(tabulate(data,headers='keys', tablefmt='grid'))
     input('Tekan ENTER Untuk Keluar >>>')
+    menu_kelola_barang()
+
+def hapus_barang():
+    os.system('cls')
+    data = pd.read_csv(f'csv/toko/{inputToko}.csv')
+    data.index = range(1,len(data)+1)
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    kode = input('Masukkan kode barang yang ingin dihapus : ').upper()
+    if kode in data['kodeBrg'].values:
+        data = data[data['kodeBrg'] != kode]
+        data.to_csv(f'csv/{inputToko}.csv')
+    print('Berhasil menghapus barang...')
+    time.sleep(2)
     menu_kelola_barang()
 
 def tambah_barang():
