@@ -671,10 +671,17 @@ def hapus_barang():
     data = pd.read_csv(f'csv/toko/{inputToko}.csv')
     data.index = range(1,len(data)+1)
     print(tabulate(data,headers='keys',tablefmt='grid'))
+    print('Ketik "EXIT" untuk kembali')
     kode = input('Masukkan kode barang yang ingin dihapus : ').upper()
     if kode in data['KodeBrg'].values:
         data = data[data['KodeBrg'] != kode]
-        data.to_csv(f'csv/toko/{inputToko}.csv')
+        data.to_csv(f'csv/toko/{inputToko}.csv',index=False)
+    elif kode == 'EXIT':
+        menu_kelola_barang()
+    else:
+        print('Tidak ada kode barang yang sesuai')
+        time.sleep(2)
+        hapus_barang()
     print('Berhasil menghapus barang...')
     time.sleep(2)
     menu_kelola_barang()
