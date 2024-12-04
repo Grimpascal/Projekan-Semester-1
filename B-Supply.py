@@ -424,7 +424,11 @@ def kelola_mitra_Tambah():
     kodeMitra = input('Masukkan kode Mitra : ').upper()
     namaMitra = input('Masukkan nama Mitra : ').capitalize()
     alamatMitra = input('Masukkan lokasi Mitra : ').capitalize()
-    kontakMitra = input('Masukkan kontak Mitra : ')
+    if kodeMitra == '' or namaMitra == '' or alamatMitra == '' or kontakMitra == '':
+        print('Tidak boleh ada yang kosong!')
+        time.sleep(2)
+        halaman_user()
+    kontakMitra = int(input('Masukkan kontak Mitra : '))
     if kodeMitra in data['kode'].values:
         print('Kode sudah ada, gunakan kode lain!')
         time.sleep(2)
@@ -964,7 +968,6 @@ def laporan_keluhan():
     laporan_admin()
 
 def laporan_mitra():
-    os.system('cls')
-    print('sek bang.....')
+
 
 utama()
