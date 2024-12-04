@@ -19,7 +19,7 @@ def utama():
     while True:
         os.system('cls')
         print(fon)
-        print("\nPilih jenis akun untuk login:")
+        print("\nPilih jenis akun untuk login:")    #fungsi \n untuk membuat baris baru
         print("[1] Admin")
         print("[2] User")
         print("-" * 40)
@@ -40,13 +40,13 @@ def utama():
 def login_admin():
     os.system('cls')
     print('='*40)
-    print('LOGIN ADMIN'.center(40))
+    print('LOGIN ADMIN'.center(40))  #fungsi center() digunakan untuk mengatur posisi teks di tengah
     print('='*40)
-    inputUser = input("Masukkan username Anda: ").rstrip().lower()
+    inputUser = input("Masukkan username Anda: ").rstrip().lower() # rstrip() untuk menghilangkan spasi di akhir string, lower() untuk mengubah semua huruf menjadi kecil
     inputPass = input('Masukkan password Anda: ').rstrip().lower()
-    data = pd.read_csv('csv/dataAdmin.csv')
-    user = data[(data['Username'] == inputUser) & (data['Password'] == inputPass)]
-    if not user.empty:
+    data = pd.read_csv('csv/dataAdmin.csv')     #untuk membaca csv
+    user = data[(data['Username'] == inputUser) & (data['Password'] == inputPass)]  #untuk mencari data yang sesuai dengan input user (menyocokkan dengan data di csv)
+    if not user.empty: #jika data tidak kosong
         print("\nSelamat datang, Anda berhasil login sebagai Admin...")
         time.sleep(2)
         halaman_admin()
@@ -73,23 +73,23 @@ def login_user2():
 
 def login_user():
     os.system('cls')
-    global userInputh
-    global userPassh
+    global userInputh   #global untuk mengakses variabel di luar fungsi
+    global userPassh    
     print("=" *40)
     print(" LOGIN USER ".center(40))
     print("=" *40)
     userInputh = input("Masukkan username: ").rstrip().lower()
     userPassh = input("Masukkan password: ").rstrip().lower()
     print('='*40)
-    data = pd.read_csv('csv/dataUser.csv')
-    user = data[(data['Username'] == userInputh) & (data['Password'] == userPassh)]
-    if not user.empty:
+    data = pd.read_csv('csv/dataUser.csv') #untuk membaca csv
+    user = data[(data['Username'] == userInputh) & (data['Password'] == userPassh)] #untuk mencari data yang sesuai dengan input user (menyocokkan dengan data
+    if not user.empty: 
         print("Selamat datang, Anda berhasil login!")
         time.sleep(2)
         halaman_user()
     else:
         os.system('cls')
-        print(f'Pengguna dengan username [{userInputh}], Password [{userPassh}] tidak ditemukan.')
+        print(f'Pengguna dengan username [{userInputh}], Password [{userPassh}] tidak ditemukan.')  #untuk menampilkan pesan error
         print("Ingin mendaftar atau mencoba lagi?")
         print('-'*40)
         print("[Enter] untuk mencoba lagi")
@@ -103,25 +103,24 @@ def login_user():
             print("\nInput tidak sesuai, silakan coba lagi.")
             time.sleep(2)
 
-def register():
+def register():     #program register
     os.system('cls')
     print("=" * 40)
     print(" REGISTRASI AKUN ".center(40))
     print("=" * 40)
-    username = input("Masukkan username: ").lower()
+    username = input("Masukkan username: ").lower() #lower() untuk mengubah semua huruf menjadi kecil
     password = input("Masukkan password: ").lower()
     data = pd.read_csv('csv/dataUser.csv')
-    if username in data['Username'].values:
+    if username in data['Username'].values: #untuk mengecek apakah username sudah ada atau belum
         print("Username sudah digunakan, silakan coba lagi.")
         time.sleep(2)
         register()
     else:
-        global hari
         saldo = 0
-        hari = datetime.date.today()
-        with open('csv/dataUser.csv', mode='a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow([username, password, saldo, hari])
+        hari = datetime.date.today() #untuk mendapatkan tanggal hari ini
+        with open('csv/dataUser.csv', mode='a', newline='') as file: #untuk menambahkan data baru ke csv
+            writer = csv.writer(file)      #untuk menulis data ke csv
+            writer.writerow([username, password, saldo, hari])  #untuk menulis data baru ke csv
             print("\nSelamat, Anda telah berhasil terdaftar!")
             time.sleep(2)
         login_user()
@@ -138,9 +137,9 @@ def halaman_user():
     print('||                5. Keluhan                     ||')
     print('||                6. Log Out                     ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
-    try:
+    try:    #untuk mencoba pilihan yang dipilih
         pilihan = int(input("Masukan Pilihan Anda : "))
-    except ValueError:
+    except ValueError:      #untuk memunculkan pesan error jika input bukan angka
         print('Harus angka & tidak boleh kosong')
         halaman_user()
     if pilihan == 1:
@@ -149,43 +148,56 @@ def halaman_user():
         pemesanan()
     elif pilihan == 3:
         cek_harga()
+    elif pilihan == 4:
+        histori_pemesanan()
     elif pilihan == 6:
         utama()
 
-def cek_harga():
+def lihat_profil():
     os.system('cls')
-    data = pd.read_csv('csv/dataMitra.csv')
-    data.index = range(1, len(data)+1)
-    print(tabulate(data,headers='keys',tablefmt='grid'))
-    print('\nKetik "EXIT" untuk kembali')
-    a = input('Masukkan kode toko yang ingin di cek : ').upper()
-    if a == 'EXIT':
+    print('='*40)
+    print('LIHAT PROFIL'.center(40))
+    print('='*40)
+    data = pd.read_csv('csv/dataUser.csv')
+    cek = data.loc[data['Username'] == userInputh] #untuk mencari data username yang sesuai dengan userinputh
+    saldo = cek['Saldo'].values[0]  #untuk mengecek saldo user
+    print('BERIKUT INFORMASI ANDA')
+    print(f'Username anda adalah = {userInputh}')
+    print(f'Password anda adalah = {userPassh}')
+    print(f'Sisa saldo anda adalah = Rp.{saldo}')
+    print('='*40)
+    input1 = input('Apakah Anda ingin mengubah password? (y/n) ')
+    if input1 == 'y':
+        a = input('Masukkan Password baru :')
+        b = input('Masukkan Password baru lagi :')
+        if a == b:
+            data.loc[data['Username'] == userInputh, 'Password'] = b #untuk mengubah password user
+            data.to_csv('csv/dataUser.csv', index=False)
+            print('Password berhasil diubah')
+            time.sleep(2)
+            halaman_user()
+        else:
+            print('Password tidak sama')
+            time.sleep(2)
+            halaman_user()
+    elif input1 == 'n':
         halaman_user()
-    elif a in data['kode'].values:
-        os.system('cls')
-        dataMitra = pd.read_csv(f'csv/toko/{a}.csv')
-        dataMitra.index = range(1,len(dataMitra)+1)
-        print(tabulate(dataMitra, headers='keys', tablefmt='grid'))
-        input('Tekan ENTER untuk kembali >>>')
-        cek_harga() 
     else:
-        print('Kode tidak ditemukan')
+        print('Mohon pilih pilihan yang valid')
         time.sleep(2)
-        cek_harga()
+    halaman_user()
 
 def pemesanan():
     os.system('cls')
     global kode
-    data = pd.read_csv(f'csv/dataMitra.csv')
-    data.index = range(1, len(data)+1)
+    data = pd.read_csv('csv/dataMitra.csv') 
+    data.index = range(1, len(data)+1)  #supaya indeks pada pandas bisa dimulai dri 1 dan menghasilkan urutan bilangan dari 1 hingga jumlah baris dalam DataFrame.
     print(tabulate(data, headers='keys',tablefmt='grid'))
-    kode = input('Masukkan kode toko yang ingin dibeli : ').upper()
-    if kode in data['kode'].values:
+    kode = input('Masukkan kode toko yang ingin dibeli : ').upper() #upper() untuk mengubah semua huruf menjadi huruf besar
+    if kode in data['kode'].values: #values untuk mengecek nilai pada kolom kode
         print('Toko tersedia, mengarahkan ke halaman pembelian...')
         time.sleep(2)
         pemesanan_toko()
-    elif kode == 'EXIT':
-        halaman_user()
     else:
         print('Toko tidak ditemukan...')
         time.sleep(2)
@@ -194,8 +206,8 @@ def pemesanan():
 def pemesanan_toko():
     os.system('cls')
     data2 = pd.read_csv('csv/dataUser.csv')
-    cek = data2.loc[data2['Username'] == userInputh]
-    saldo = cek['Saldo'].values[0]
+    cek = data2.loc[data2['Username'] == userInputh]    #untuk mengecek lokasi data user yang sesuai dengan username yang dimasukkan
+    saldo = cek['Saldo'].values[0]  #untuk mengecek saldo user yang sesuai dengan username yang dimasukkan
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     print('|| ^^^ 	     	   SELAMAT DATANG           ^^^  ||')
     print('||--------- Apa yang ingin anda lakukan?---------||')
@@ -218,7 +230,7 @@ def pemesanan_toko():
 
 def pesan():
     os.system('cls')
-    data = pd.read_csv(f'csv/toko/{kode}.csv')
+    data = pd.read_csv(f'csv/toko/{kode}.csv')  # untuk membaca csv yang sesuai dengan kode toko yang dipilih
     dataUser = pd.read_csv('csv/dataUser.csv')
     jml = int(input('Ingin membeli berapa barang : '))
     if jml == 0:
@@ -226,37 +238,55 @@ def pesan():
         time.sleep(2)
         pesan()
     for i in range(jml):
+        print('Ketik "M" untuk melihat kode barang')
         os.system('cls')
-        data.index = range(1,len(data)+1)
+        data.index = range(1,len(data)+1)   #untuk mengubah indeks pada pandas agar dimulai dari 1
         print(tabulate(data,headers='keys',tablefmt='grid'))
-        kodebrg = input('Masukkan kode barang yang akan dibeli : ').upper()
-        if kodebrg in data['KodeBrg'].values:
-            cek = data[data['KodeBrg'] == kodebrg]
+        kodebrg = input('Masukkan kode barang yang akan dibeli : ').upper() #upper() untuk mengubah semua huruf menjadi huruf besar
+        if kodebrg == 'M':
+            data.index = range(1,len(data)+1)
+            print(tabulate(data,headers='keys',tablefmt='grid'))
+            input('Ketik ENTER untuk kembali >>>')
+            pesan()
+        elif kodebrg in data['KodeBrg'].values:
+            cek = data[data['KodeBrg'] == kodebrg] #untuk mengecek data barang yang sesuai dengan kode barang yang dimasukkan
             cekTrue = cek['Stok'].values[0]
+            cek2 = dataUser[dataUser['Username'] == userInputh]
+            cekSaldo = cek2['Saldo'].values[0]
             a = int(input('Masukkan jumlah yang ingin dibeli : '))
             if cekTrue < 1:
                 print('Barang tidak memiliki stok, semua akan dimulai ulang...')
                 time.sleep(2)
                 pesan()
+            elif a == 0:
+                print('Minimal pembelian adalah 1')
+                time.sleep(2)
+                pesan()
+            elif cekTrue < a:
+                print(f'Stok tidak mencukupi untuk dibeli, sisa barang {cekTrue}')
+                time.sleep(2)
+                pesan()
+            elif cekSaldo < a * cek['Harga'].values[0]:
+                print('Saldo tidak mecukupi untuk Membeli...')
+                time.sleep(2)
+                pesan()
             else:
-                cek1 = data[data['KodeBrg'] == kodebrg]
-                cekHarga = cek1['Harga'].values[0]
-                data.loc[data['KodeBrg'] == kodebrg, 'Stok'] -= a
-                dataUser.loc[dataUser['Username'] == userInputh, 'Saldo'] -= (cekHarga * a)
-                data.to_csv(f'csv/toko/{kode}.csv',index=False)
-                dataUser.to_csv('csv/dataUser.csv',index=False)
-                # with open('csv/dataPengiriman.csv', 'a',newline='') as file:
-                #     writer = csv.writer(file)
-                #     writer.writerow([kode,userInputh,hari,])
+                cek1 = data[data['KodeBrg'] == kodebrg] #untuk mengecek data barang yang sesuai dengan kode barang yang dimasukkan
+                cekHarga = cek1['Harga'].values[0]  
+                data.loc[data['KodeBrg'] == kodebrg, 'Stok'] -= a #untuk mengurangi stok barang yang sesuai dengan kode barang yang dimasukkan
+                dataUser.loc[dataUser['Username'] == userInputh, 'Saldo'] -= (cekHarga * a)  #untuk mengurangi saldo user yang sesuai dengan username yang dimasukkan
+                data.to_csv(f'csv/toko/{kode}.csv',index=False) #untuk menyimpan perubahan data ke csv
+                dataUser.to_csv('csv/dataUser.csv',index=False) #index=False untuk menghilangkan index atau koma di awal csv
                 print('Anda berhasil membeli barang...')
                 time.sleep(2)
-                pemesanan()
+                pemesanan_toko()
                 continue
+            pemesanan()
         else:
             print('Kode tidak ditemukan...')
             time.sleep(2)
             pesan()
-            
+
 def isi_saldo():
     os.system('cls')
     data = pd.read_csv('csv/dataUser.csv')
@@ -266,48 +296,48 @@ def isi_saldo():
     isiSaldo = int(input('Masukkan jumlah saldo yang ingin diisi : '))
     print('Sedang memverifikasi pembayaran...')
     time.sleep(2)
-    data.loc[data['Username'] == userInputh, 'Saldo'] += isiSaldo
+    data.loc[data['Username'] == userInputh, 'Saldo'] += isiSaldo #untuk menambahkan saldo user yang sesuai dengan username yang dimasukkan
     data.to_csv('csv/dataUser.csv',index=False)
     print('Selamat saldo anda telah terisi...')
     time.sleep(2)
     pemesanan_toko()
 
-def lihat_profil():
+def cek_harga():
     os.system('cls')
-    print('='*40)
-    print('LIHAT PROFIL'.center(40))
-    print('='*40)
-    data = pd.read_csv('csv/dataUser.csv')
-    cek = data.loc[data['Username'] == userInputh]
-    saldo = cek['Saldo'].values[0]
-    cekpw = data.loc[data['Username'] == userInputh]
-    pw = cekpw['Password'].values[0]
-    print('BERIKUT INFORMASI ANDA')
-    print(f'Username anda adalah = {userInputh}')
-    print(f'Password anda adalah = {pw}')
-    print(f'Sisa saldo anda adalah = Rp.{saldo}')
-    print('='*40)
-    input1 = input('Apakah Anda ingin mengubah password? (y/n) ')
-    if input1 == 'y':
-        a = input('Masukkan Password baru :')
-        b = input('Masukkan Password baru lagi :')
-        if a == b:
-            data.loc[data['Username'] == userInputh, 'Password'] = b
-            data.to_csv('csv/dataUser.csv', index=False)
-            print('Password berhasil diubah')
-            time.sleep(2)
-            halaman_user()
-        else:
-            print('Password tidak sama')
-            time.sleep(2)
-            halaman_user()
-    elif input1 == 'n':
+    data = pd.read_csv('csv/dataMitra.csv')
+    data.index = range(1, len(data)+1)  #supaya indeks pada pandas bisa dimulai dri 1 dan menghasilkan urutan bilangan dari 1 hingga jumlah baris dalam DataFrame. 
+    print(tabulate(data,headers='keys',tablefmt='grid')) #untuk menampilkan data dalam bentuk tabel
+    print('\nKetik "EXIT" untuk kembali')
+    a = input('Masukkan kode toko yang ingin di cek : ').upper()    #upper() untuk mengubah semua huruf menjadi huruf besar
+    if a in data['kode']:   #jika kode toko yang dimasukkan ada di dalam data
+        dataMitra = pd.read_csv(f'csv/toko/{a}.csv')    #berfungsi untuk membaca csv yang sesuai dengan kode toko yang dimasukkan
+        dataMitra.index = range(1,len(data)+1)   #supaya indeks pada pandas bisa dimulai dri 1 dan menghasilkan urutan bilangan dari 1 hingga jumlah baris dalam DataFrame.
+        print(tabulate(data,headers='keys',tablefmt='grid'))
+    elif a == 'EXIT':
         halaman_user()
     else:
-        print('Mohon pilih pilihan yang valid')
+        print('Kode tidak ditemukan')
         time.sleep(2)
-    halaman_user()
+        cek_harga()
 
+def histori_pemesanan():
+    os.system('cls')
+    
+
+def keluhan():
+    os.system('cls')
+    print('Anda masuk kedalam menu user')
+    print('Silahkan masukkan keluhan anda')
+    adminUser = input('Masukkan keluhan : ')
+    data = pd.read_csv('csv/dataKeluhan.csv')
+    with open('csv/dataKeluhan.csv', 'a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([adminUser])
+        data.to_csv('csv/dataKeluhan.csv', index=False)
+        print('Keluhan telah disampaikan')
+        input('tekan enter untuk kembali')
+    halaman_user()
+    
 def halaman_admin():
     os.system('cls')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
@@ -346,69 +376,149 @@ def halaman_admin():
         time.sleep(2)
         halaman_admin()
 
-def laporan_admin():
-    os.system('cls')
-    print('='*40)
-    print('LAPORAN'.center(40))
-    print('='*40)
-    print('Pilih laporan apa yang ingin di tampilkan')
-    print('1. Laporan Mitra')
-    print('2. Laporan keluhan')
-    print('3. Kembali')
-    pilihan = int(input('Masukkan pilihan : '))
-    if pilihan == 1:
-        laporan_mitra()
-    elif pilihan == 2:
-        laporan_keluhan()
-    elif pilihan == 3:
-        halaman_admin()
-    else:
-        print('Tidak ada di pilihan...')
-        time.sleep(2)
-        laporan_admin()
-
-def laporan_keluhan():
-    os.system('cls')
-    data = pd.read_csv('csv/keluhanUser.csv')
-    data.index = range(1, len(data)+1)
-    print(tabulate(data,headers='keys',tablefmt='grid'))
-    input('tekan ENTER untuk kembali >>>')
-    laporan_admin()
-
-def laporan_mitra():
-    os.system('cls')
-    print('sek bang.....')
-
-def menu_kelola_distribusi():
+def kelola_mitra():
     os.system('cls')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     print('|| ^^^ 	     	   SELAMAT DATANG            ^^^ ||')
-    print('||--------- Apa yang ingin anda lakukan?---------||')
-    print('||                1. Cek Pengiriman              ||')
-    print('||                2. Kembali                     ||')
+    print('||----- Berikut menu untuk mengelola mitra ------||')
+    print('||                1. Cek Data mitra              ||')
+    print('||                2. Tambah mitra                ||')
+    print('||                3. Hapus mitra                 ||')
+    print('||                4. Edit mitra                  ||')
+    print('||                5. Kembali                     ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
+    pilihan = int(input("Masukan Pilihan Anda : "))
     try:
-        pilihan = int(input('Masukkan pilihan : '))
+        if pilihan == 1:
+            os.system('cls')
+            data = pd.read_csv('csv/dataMitra.csv')
+            data.index = range(1, len(data)+1)
+            print(tabulate(data,headers='keys', tablefmt='grid'))
+            input('Tekan enter untuk kembali>>>')
+            kelola_mitra()
+        elif pilihan == 2:
+            kelola_mitra_Tambah()
+        elif pilihan == 3:
+            kelola_mitra_hapus()
+        elif pilihan == 4:
+            kelola_mitra_edit()
+        elif pilihan == 5:
+            halaman_admin()
+        else:
+            print('Tidak ada di pilihan')
+            time.sleep(2)
+            kelola_mitra()
     except ValueError:
-        print('Pilihan harus angka & tidak boleh kosong!')
+        print('Pilihan harus berupa angka & tidak boleh kosong!')
         time.sleep(2)
-        menu_kelola_distribusi()
-    if pilihan == 1:
-        cek_pengiriman()
-    elif pilihan == 2:
-        halaman_admin()
-    else:
-        print('Tidak ada di pilihan...')
-        time.sleep(2)
-        menu_kelola_distribusi()
+        kelola_mitra()
 
-def cek_pengiriman():
+def kelola_mitra_Tambah():
     os.system('cls')
-    data = pd.read_csv('csv/dataPengiriman.csv')
-    data.index = range(1,len(data)+1)
-    print(tabulate(data,headers='keys',tablefmt='grid'))
-    input('Tekan ENTER untuk kembali >>>')
-    menu_kelola_distribusi()
+    status = 'Tersedia'
+    data = pd.read_csv('csv/dataMitra.csv')
+    kodeMitra = input('Masukkan kode Mitra : ').upper()
+    namaMitra = input('Masukkan nama Mitra : ').capitalize()
+    alamatMitra = input('Masukkan lokasi Mitra : ').capitalize()
+    kontakMitra = input('Masukkan kontak Mitra : ')
+    if kodeMitra in data['kode'].values:
+        print('Kode sudah ada, gunakan kode lain!')
+        time.sleep(2)
+        kelola_mitra_Tambah()
+    else:
+        with open('csv/dataMitra.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([kodeMitra,namaMitra,alamatMitra,kontakMitra,status])
+        with open(f'csv/toko/{kodeMitra}.csv', 'w', newline='') as fil:
+            writer2 = csv.writer(fil)
+            writer2.writerow(['KodeBrg','NamaBrg','Harga','Stok'])
+        print('Data anda berhasil ditambahkan...')
+        time.sleep(2)
+        kelola_mitra()
+
+def kelola_mitra_hapus():
+    os.system('cls')
+    data = pd.read_csv('csv/dataMitra.csv')
+    data.index = range(1, len(data)+1)
+    print(tabulate(data,headers='keys', tablefmt='grid'))
+    print('KETIK "EXIT" UNTUK KEMBALI')
+    hapusMitra = input('Masukkan kode mitra yang ingin dihapus : ').upper()
+    if hapusMitra == 'EXIT':
+        kelola_mitra()
+    if os.path.exists(f'csv/toko/{hapusMitra}.csv'):
+        konfirmasi = input('Apakah anda yakin ingin menghapus mitra [y][n] : ').lower()
+        if konfirmasi == 'y':
+            data = data[data['kode'] != hapusMitra]
+            data.to_csv('csv/dataMitra.csv', index=False)
+            os.remove(f'csv/toko/{hapusMitra}.csv')
+            print('Mitra berhasil dihapus...')
+            time.sleep(2)
+            kelola_mitra()
+        elif konfirmasi == 'n':
+            print('Penghapusan dibatalkan...')
+            time.sleep(2)
+            kelola_mitra_hapus()
+        else:
+            print('Pilihan tidak sesuai & tidak boleh kosong')
+            time.sleep(2)
+            kelola_mitra_hapus()
+    else:
+        print('Tidak ada mitra dengan kode tersebut')
+        time.sleep(2)
+        kelola_mitra_hapus()
+
+def kelola_mitra_edit():
+    os.system('cls')
+    data = pd.read_csv('csv/dataMitra.csv')
+    data.index = range(1, len(data)+1)
+    print(tabulate(data,headers='keys', tablefmt='grid'))
+    print('KETIK "EXIT" UNTUK KEMBALI')
+    kodeMitra = input('Masukkan kode toko yang ingin diubah : ').upper()
+    if kodeMitra == 'EXIT':
+        kelola_mitra()
+    if kodeMitra in data['kode'].values:
+        print('''Ingin mengubah bagian :
+1. Nama
+2. Lokasi
+3. Kontak
+4. Keluar''')
+        try:
+            inputUser = int(input('Masukkan pilihan : '))
+            if inputUser == 1:
+                inputNama = input('Masukkan nama baru : ').capitalize()
+                data.loc[data['kode'] == kodeMitra, 'Nama'] = inputNama
+                data.to_csv('csv/dataMitra.csv',index=False)
+                print('Nama berhasil diubah')
+                time.sleep(2)
+                kelola_mitra()
+            elif inputUser == 2:
+                inputLok = input('Masukkan lokasi baru : ').capitalize()
+                data.loc[data['kode'] == kodeMitra, 'Alamat'] = inputLok
+                data.to_csv('csv/dataMitra.csv', index=False)
+                print('Lokasi berhasil diubah...')
+                time.sleep(2)
+                kelola_mitra()
+            elif inputUser == 3:
+                inputKontak = int(input('Masukkan Kontak baru : '))
+                data.loc[data['kode'] == kodeMitra, 'Kontak'] = inputKontak
+                data.to_csv('csv/dataMitra.csv', index=False)
+                print('Kontak berhasil diubah...')
+                time.sleep(2)
+                kelola_mitra()
+            elif inputUser == 4:
+                kelola_mitra()
+            else:
+                print('tidak ada di pilihan')
+                time.sleep(2)
+                kelola_mitra_edit()
+        except ValueError:
+            print('Pilihan harus berupa angka & tidak boleh kosong')
+            time.sleep(2)
+            kelola_mitra_edit()
+    else:
+        print('Tidak ada mitra dengan kode tersebut')
+        time.sleep(2)
+        kelola_mitra_edit()
 
 def kelola_barang():
     os.system('cls')
@@ -418,7 +528,7 @@ def kelola_barang():
     print(tabulate(data,headers='keys', tablefmt='grid'))
     print('Ketik "EXIT" Untuk kembali')
     inputToko = input('Masukkan kode Toko : ').upper()
-    if ((data['kode'] == inputToko) & (data['Status'] == 'Tersedia')).any():
+    if ((data['kode'] == inputToko) & (data['Status'] == 'Tersedia')).any():    #untuk mengecek apakah kode toko sesuai dengan dengan inputan user dan status toko masih tersedia
         print('Toko terdeteksi, mengarahkan ke halaman...')
         time.sleep(2)
         menu_kelola_barang()
@@ -471,16 +581,16 @@ def tambah_barang():
     for i in range(jmlTambah):
         os.system('cls')
         kodeBrg = input('Masukkan kode barang : ').upper()
-        namaBrg = input('Masukkan nama barang : ').capitalize()
+        namaBrg = input('Masukkan nama barang : ').capitalize() #capitalize() untuk mengubah huruf pertama menjadi huruf besar
         hargaBrg = int(input('Tentukan harga barang : '))
         stokBrg = int(input('Masukkan Jumlah Stok :'))
-        if kodeBrg in data['KodeBrg'].values:
+        if kodeBrg in data['KodeBrg'].values:  #untuk mengecek kode barang sudah ada atau belum
             print('Kode sudah ada, pilih kode lain!')
             time.sleep(2)
         else:
-            with open(f'csv/toko/{inputToko}.csv', 'a', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow([kodeBrg,namaBrg,hargaBrg,stokBrg])
+            with open(f'csv/toko/{inputToko}.csv', 'a', newline='') as file:    #untuk menambahkan data ke csv
+                writer = csv.writer(file)   #untuk menulis data ke csv
+                writer.writerow([kodeBrg,namaBrg,hargaBrg,stokBrg])     #untuk menuliskan data baru ke csv
             print('Barang berhasil ditambahkan...')
             time.sleep(2)
     menu_kelola_barang()
@@ -490,7 +600,7 @@ def edit_barang():
     print("=" * 40)
     print(" PILIH OPSI ".center(40, "="))
     print("=" * 40)
-    print("1. Ubah Nama Barang".ljust(30))
+    print("1. Ubah Nama Barang".ljust(30))  #ljust untuk mengatur posisi teks ke kiri
     print("2. Ubah Harga Barang".ljust(30))
     print("3. Tambah Stok".ljust(30))
     print("4. Kurangi Stok".ljust(30))
@@ -535,7 +645,7 @@ def ubah_nama_barang():
             print('Kode tidak ditemukan')
             time.sleep(2)
             edit_barang()
-            
+
 def ubah_harga_barang():
     while True:
         os.system('cls')
@@ -615,37 +725,137 @@ def kurangi_stok_barang():
             time.sleep(2)
             edit_barang()
 
-def kelola_mitra():
+def kelola_kendaraan():
+    os.system('cls')
+    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
+    print('|| ^^^ 	     	   SELAMAT DATANG            ^^^||')
+    print('||----- Berikut menu untuk kelola kendaraan -----||')
+    print('||                1. Cek kendaraan               ||')
+    print('||                2. Tambah kendaraan            ||')
+    print('||                3. Edit kendaraan              ||')
+    print('||                4. Hapus kendaraan             ||')
+    print('||                5. Kembali                     ||')
+    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
+    try:
+        pilihan = int(input("Masukan Pilihan Anda : "))
+        if pilihan == 1:
+            cek_ketersediaan_kendaraan()
+        elif pilihan == 2:
+            tambah_kendaraan()
+        elif pilihan == 3:
+            edit_kendaraan()
+        elif pilihan == 4:
+            hapus_kendaraan()
+        elif pilihan == 5:
+            halaman_admin()
+        else:
+            print("pilihan tidak ada, silahkan coba lagi")
+            time.sleep(2)
+            kelola_kendaraan()
+    except ValueError:
+        print("input harus berupa angka, silahkan coba lagi")
+        time.sleep(2)
+        kelola_kendaraan()
+
+def cek_ketersediaan_kendaraan():
+    os.system('cls')
+    try:
+        data = pd.read_csv('csv/dataKendaraan.csv')
+        data.index = range(1,len(data)+1)
+        print(tabulate(data,headers='keys',tablefmt='grid'))
+    except FileNotFoundError:
+        print("data kendaraan tidak ditemukan")
+    input("tekan enter untuk kembali...")
+    kelola_kendaraan()
+
+def tambah_kendaraan():
+    os.system('cls')
+    status = 'Tersedia'
+    kodeKendraan = input('Masukkan kode kendaraan : ').upper()
+    jenisInput = input("masukkan jenis kendaraan (Motor/Mobil): ").capitalize()
+    inputPlat = input("masukkan nomor Plat kendaraan: ").upper()
+    with open('csv/dataKendaraan.csv', 'a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([kodeKendraan,jenisInput,inputPlat,status])
+    print("kendaraan berhasil ditambahkan")
+    time.sleep(2)
+    kelola_kendaraan()
+
+def edit_kendaraan():
+    os.system('cls')
+    try:
+        data = pd.read_csv('csv/dataKendaraan.csv')
+        data.index = range(1,len(data)+1)
+        print(tabulate(data,headers='keys',tablefmt='grid'))
+        kode = input("masukkan kode kendaraan yang ingin diedit: ").upper()
+        if kode in data['kode'].values:
+            print('Data kendaraan ditemukan')
+            jenis_baru = input("masukkan jenis kendaraan baru (kosongkan jika tidak ada yang diubah) : ").capitalize()
+            status_baru = input("masukkan status kendaraan baru (kosongkan jika tidak ada yang diubah) : ").capitalize()
+            if jenis_baru:
+                data.loc[data['kode'] == kode, 'Jenis'] = jenis_baru
+            if status_baru:
+                data.loc[data['kode'] == kode, 'Status'] = status_baru
+
+            data.to_csv('csv/dataKendaraan.csv', index=False)
+            print("Data kendaraan berhasil di tambahkan")
+        else:
+            print("Data kendaraan tidak ditemukan")
+    except ValueError:
+        print("Data kendaraan tidak ditemukan")
+    input("Tekan enter untuk kembali...")
+    kelola_kendaraan()
+
+def hapus_kendaraan():
+    os.system('cls')
+    data = pd.read_csv('csv/dataKendaraan.csv')
+    data.index = range(1,len(data)+1)
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    kode = input("Masukkan kode kendaraan yang ingin dihapus: ").upper()
+    if kode in data['kode'].values:
+        data = data[data['kode'] != kode]
+        data.to_csv('csv/dataKendaraan.csv', index=False)
+        print("Kendaraan berhasil dihapus.")
+        time.sleep(2)
+        kelola_kendaraan()
+    else:
+        print("Kendaraan tidak ditemukan.")
+        time.sleep(2)
+        kelola_kendaraan()
+    input("Tekan enter untuk kembali...")
+
+    kelola_kendaraan()
+
+def menu_kelola_distribusi():
     os.system('cls')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     print('|| ^^^ 	     	   SELAMAT DATANG            ^^^ ||')
-    print('||----- Berikut menu untuk mengelola mitra ------||')
-    print('||                1. Cek Data mitra              ||')
-    print('||                2. Tambah mitra                ||')
-    print('||                3. Hapus mitra                 ||')
-    print('||                4. Edit mitra                  ||')
-    print('||                5. Kembali                     ||')
+    print('||--------- Apa yang ingin anda lakukan?---------||')
+    print('||                1. Cek Pengiriman              ||')
+    print('||                2. Kembali                     ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
-    pilihan = int(input("Masukan Pilihan Anda : "))
+    try:
+        pilihan = int(input('Masukkan pilihan : '))
+    except ValueError:
+        print('Pilihan harus angka & tidak boleh kosong!')
+        time.sleep(2)
+        menu_kelola_distribusi()
     if pilihan == 1:
-        os.system('cls')
-        data = pd.read_csv('csv/dataMitra.csv')
-        data.index = range(1, len(data)+1)
-        print(tabulate(data,headers='keys', tablefmt='grid'))
-        input('Tekan enter untuk kembali>>>')
-        kelola_mitra()
+        cek_pengiriman()
     elif pilihan == 2:
-        kelola_mitra_Tambah()
-    elif pilihan == 3:
-        kelola_mitra_hapus()
-    elif pilihan == 4:
-        kelola_mitra_edit()
-    elif pilihan == 5:
         halaman_admin()
     else:
-        print('Tidak ada di pilihan')
+        print('Tidak ada di pilihan...')
         time.sleep(2)
-        kelola_mitra()
+        menu_kelola_distribusi()
+
+def cek_pengiriman():
+    os.system('cls')
+    data = pd.read_csv('csv/dataPengiriman.csv')
+    data.index = range(1,len(data)+1)
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    input('Tekan ENTER untuk kembali >>>')
+    menu_kelola_distribusi()
 
 def kelola_user():
     os.system('cls')    
@@ -693,113 +903,6 @@ def tampilkan_admin():
     print(tabulate(df.head(5),headers='keys', tablefmt='grid'))
     input('Tekan enter untuk kembali>>>')
     kelola_user()
-                    
-def kelola_mitra_Tambah():
-    os.system('cls')
-    status = 'Tersedia'
-    data = pd.read_csv('csv/dataMitra.csv')
-    kodeMitra = input('Masukkan kode Mitra : ').upper()
-    namaMitra = input('Masukkan nama Mitra : ').capitalize()
-    alamatMitra = input('Masukkan lokasi Mitra : ').capitalize()
-    kontakMitra = input('Masukkan kontak Mitra : ')
-    if kodeMitra in data['kode'].values:
-        print('Kode sudah ada, gunakan kode lain!')
-        time.sleep(2)
-        kelola_mitra_Tambah()
-    else:
-        with open('csv/dataMitra.csv', 'a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow([kodeMitra,namaMitra,alamatMitra,kontakMitra,status])
-        with open(f'csv/toko/{kodeMitra}.csv', 'w', newline='') as fil:
-            writer2 = csv.writer(fil)
-            writer2.writerow(['KodeBrg','NamaBrg','Harga','Stok'])
-        print('Data anda berhasil ditambahkan...')
-        time.sleep(2)
-        kelola_mitra()
-
-def kelola_mitra_edit():
-    os.system('cls')
-    data = pd.read_csv('csv/dataMitra.csv')
-    data.index = range(1, len(data)+1)
-    print(tabulate(data,headers='keys', tablefmt='grid'))
-    print('KETIK "EXIT" UNTUK KEMBALI')
-    kodeMitra = input('Masukkan kode toko yang ingin diubah : ').upper()
-    if kodeMitra == 'EXIT':
-        kelola_mitra()
-    if kodeMitra in data['kode'].values:
-        print('''Ingin mengubah bagian :
-1. Nama
-2. Lokasi
-3. Kontak
-4. Keluar''')
-        try:
-            inputUser = int(input('Masukkan pilihan : '))
-            if inputUser == 1:
-                inputNama = input('Masukkan nama baru : ').capitalize()
-                data.loc[data['kode'] == kodeMitra, 'Nama'] = inputNama
-                data.to_csv('csv/dataMitra.csv',index=False)
-                print('Nama berhasil diubah')
-                time.sleep(2)
-                kelola_mitra()
-            elif inputUser == 2:
-                inputLok = input('Masukkan lokasi baru : ').capitalize()
-                data.loc[data['kode'] == kodeMitra, 'Alamat'] = inputLok
-                data.to_csv('csv/dataMitra.csv', index=False)
-                print('Lokasi berhasil diubah...')
-                time.sleep(2)
-                kelola_mitra()
-            elif inputUser == 3:
-                inputKontak = input('Masukkan Kontak baru : ')
-                data.loc[data['kode'] == kodeMitra, 'Kontak'] = inputKontak
-                data.to_csv('csv/dataMitra.csv', index=False)
-                print('Kontak berhasil diubah...')
-                time.sleep(2)
-                kelola_mitra()
-            elif inputUser == 4:
-                kelola_mitra()
-            else:
-                print('tidak ada di pilihan')
-                time.sleep(2)
-                kelola_mitra_edit()
-        except ValueError:
-            print('Pilihan harus berupa angka & tidak boleh kosong')
-            time.sleep(2)
-            kelola_mitra_edit()
-    else:
-        print('Tidak ada mitra dengan kode tersebut')
-        time.sleep(2)
-        kelola_mitra_edit()
-
-def kelola_mitra_hapus():
-    os.system('cls')
-    data = pd.read_csv('csv/dataMitra.csv')
-    data.index = range(1, len(data)+1)
-    print(tabulate(data,headers='keys', tablefmt='grid'))
-    print('KETIK "EXIT" UNTUK KEMBALI')
-    hapusMitra = input('Masukkan kode mitra yang ingin dihapus : ').upper()
-    if hapusMitra == 'EXIT':
-        kelola_mitra()
-    if os.path.exists(f'csv/toko/{hapusMitra}.csv'):
-        konfirmasi = input('Apakah anda yakin ingin menghapus mitra [y][n] : ').lower()
-        if konfirmasi == 'y':
-            data = data[data['kode'] != hapusMitra]
-            data.to_csv('csv/dataMitra.csv', index=False)
-            os.remove(f'csv/toko/{hapusMitra}.csv')
-            print('Mitra berhasil dihapus...')
-            time.sleep(2)
-            kelola_mitra()
-        elif konfirmasi == 'n':
-            print('Penghapusan dibatalkan...')
-            time.sleep(2)
-            kelola_mitra_hapus()
-        else:
-            print('Pilihan tidak sesuai & tidak boleh kosong')
-            time.sleep(2)
-            kelola_mitra_hapus()
-    else:
-        print('Tidak ada mitra dengan kode tersebut')
-        time.sleep(2)
-        kelola_mitra_hapus()
 
 def tambah_admin():
     os.system('cls')
@@ -829,102 +932,37 @@ def tambah_user():
         input('tekan enter untuk kembali>>>')
     halaman_admin()
 
-def kelola_kendaraan():
+def laporan_admin():
     os.system('cls')
-    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
-    print('|| ^^^ 	     	   SELAMAT DATANG            ^^^||')
-    print('||----- Berikut menu untuk kelola kendaraan -----||')
-    print('||                1. Cek kendaraan               ||')
-    print('||                2. Tambah kendaraan            ||')
-    print('||                3. Edit kendaraan              ||')
-    print('||                4. Hapus kendaraan             ||')
-    print('||                5. Kembali                     ||')
-    print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
-    try:
-        pilihan = int(input("Masukan Pilihan Anda : "))
-        if pilihan == 1:
-            cek_ketersediaan_kendaraan()
-        elif pilihan == 2:
-            tambah_kendaraan()
-        elif pilihan == 3:
-            edit_kendaraan()
-        elif pilihan == 4:
-            hapus_kendaraan()
-        elif pilihan == 5:
-            halaman_admin
-        else:
-            print("pilihan tidak ada, silahkan coba lagi")
-            time.sleep(2)
-            kelola_kendaraan()
-    except ValueError:
-        print("input harus berupa angka, silahkan coba lagi")
-        time.sleep(2)
-        kelola_kendaraan()
-
-def cek_ketersediaan_kendaraan():
-    os.system('cls')
-    try:
-        data = pd.read_csv('csv/dataKendaraan.csv')
-        data.index = range(1,len(data)+1)
-        print(tabulate(data,headers='keys',tablefmt='grid'))
-    except FileNotFoundError:
-        print("data kendaraan tidak ditemukan")
-    input("tekan enter untuk kembali...")
-    kelola_kendaraan()
-
-def tambah_kendaraan():
-    os.system('cls')
-    status = 'Tersedia'
-    kodeKendraan = input('Masukkan kode kendaraan : ').upper()
-    jenisInput = input("masukkan jenis kendaraan (Motor/Mobil): ").capitalize()
-    inputPlat = input("masukkan nomor Plat kendaraan: ").upper()
-    with open('csv/dataKendaraan.csv', 'a', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow([kodeKendraan,jenisInput,inputPlat,status])
-    print("kendaraan berhasil ditambahkan")
-    time.sleep(2)
-    kelola_kendaraan()
-
-def edit_kendaraan():
-    os.system('cls')
-    try:
-        data = pd.read_csv('csv/dataKendaraan.csv')
-        data.index = range(1,len(data)+1)
-        print(tabulate(data,headers='keys',tablefmt='grid'))
-        kode = input("masukkan kode kendaraan yang ingin diedit: ").upper()
-        if kode in data['kode'].values:
-            print('Data kendaraan ditemukan')
-            jenis_baru = input("masukkan jenis kendaraan baru (kosongkan jika tidak ada yang diubah) : ").capitalize()
-            status_baru = input("masukkan status kendaraan baru (kosongkan jika tidak ada yang diubah) : ").capitalize()
-            if jenis_baru:
-                data.loc[data['plat'] == kode, 'jenis'] = jenis_baru
-            if status_baru:
-                data.loc[data['kode'] == kode, 'status'] = status_baru
-            data.to_csv('csv/dataKendaraan.csv', index=False)
-            print("Data kendaraan berhasil di tambahkan")
-        else:
-            print("Data kendaraan tidak ditemukan")
-    except ValueError:
-        print("Data kendaraan tidak ditemukan")
-    input("Tekan enter untuk kembali...")
-    kelola_kendaraan()
-
-def hapus_kendaraan():
-    os.system('cls')
-    data = pd.read_csv('csv/dataKendaraan.csv')
-    data.index = range(1,len(data)+1)
-    print(tabulate(data,headers='keys',tablefmt='grid'))
-    kode = input("Masukkan kode kendaraan yang ingin dihapus: ").upper()
-    if kode in data['kode'].values:
-        data = data[data['kode'] != kode]
-        data.to_csv('csv/dataKendaraan.csv', index=False)
-        print("Kendaraan berhasil dihapus.")
-        time.sleep(2)
-        kelola_kendaraan()
+    print('='*40)
+    print('LAPORAN'.center(40))
+    print('='*40)
+    print('Pilih laporan apa yang ingin di tampilkan')
+    print('1. Laporan Mitra')
+    print('2. Laporan keluhan')
+    print('3. Kembali')
+    pilihan = int(input('Masukkan pilihan : '))
+    if pilihan == 1:
+        laporan_mitra()
+    elif pilihan == 2:
+        laporan_keluhan()
+    elif pilihan == 3:
+        halaman_admin()
     else:
-        print("Kendaraan tidak ditemukan.")
+        print('Tidak ada di pilihan...')
         time.sleep(2)
-        kelola_kendaraan()
-    input("Tekan enter untuk kembali...")
+        laporan_admin()
+
+def laporan_keluhan():
+    os.system('cls')
+    data = pd.read_csv('csv/keluhanUser.csv')
+    data.index = range(1, len(data)+1) # Untuk mengubah index menjadi angka 1, 2, 3, dst
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    input('tekan ENTER untuk kembali >>>')
+    laporan_admin()
+
+def laporan_mitra():
+    os.system('cls')
+    print('sek bang.....')
 
 utama()
