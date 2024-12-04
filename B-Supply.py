@@ -970,7 +970,6 @@ def tambah_admin():
     print('Anda masuk dalam menu tambah admin')
     print('Silahkan masukan data admin yang akan ditambahkan')
     adminUser = input('Masukkan username : ')
-    adminPass = input('Masukkan Password : ')
     fileAda = os.path.exists('csv/dataAdmin.csv')
     with open('csv/dataAdmin.csv', 'a', newline='') as file:
         writer = csv.writer(file)
