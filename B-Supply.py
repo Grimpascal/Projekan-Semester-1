@@ -426,6 +426,10 @@ def keluhan():
     print('FORMULIR KELUHAN'.center(50))
     print("="*50)
     keluhUser = input('Masukkan keluhan anda : ')
+    if keluhUser == '':
+        print('Mohon isi formulir keluhan')
+        time.sleep(2)
+        keluhan()
     data = pd.read_csv('csv/keluhanUser.csv')
     with open('csv/keluhanUser.csv', 'a', newline='') as file:
         writer = csv.writer(file)
