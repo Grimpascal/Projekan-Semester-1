@@ -702,23 +702,21 @@ def tambah_barang():
     print('TAMBAH BARANG'.center(40))
     print('='*40)
     data = pd.read_csv(f'csv/toko/{inputToko}.csv')
-    jmlTambah = int(input('Ingin menambah berapa barang : '))
-    for i in range(jmlTambah):
-        os.system('cls')
-        kodeBrg = input('Masukkan kode barang : ').upper()
-        namaBrg = input('Masukkan nama barang : ').capitalize()
-        hargaBrg = int(input('Tentukan harga barang : '))
-        stokBrg = int(input('Masukkan Jumlah Stok :'))
-        if kodeBrg in data['KodeBrg'].values:
-            print('Kode sudah ada, pilih kode lain!')
-            time.sleep(2)
-        else:
-            with open(f'csv/toko/{inputToko}.csv', 'a', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow([kodeBrg,namaBrg,hargaBrg,stokBrg])
-            print('Barang berhasil ditambahkan...')
-            time.sleep(2)
-    menu_kelola_barang()
+    kodeBrg = input('Masukkan kode barang : ').upper()
+    namaBrg = input('Masukkan nama barang : ').capitalize()
+    hargaBrg = int(input('Tentukan harga barang : '))
+    stokBrg = int(input('Masukkan Jumlah Stok :'))
+    if kodeBrg in data['KodeBrg'].values:
+        print('Kode sudah ada, pilih kode lain!')
+        time.sleep(2)
+        tambah_barang()
+    else:
+        with open(f'csv/toko/{inputToko}.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([kodeBrg,namaBrg,hargaBrg,stokBrg])
+        print('Barang berhasil ditambahkan...')
+        time.sleep(2)
+        menu_kelola_barang()
 
 def edit_barang():
     os.system('cls')
@@ -839,6 +837,11 @@ def kurangi_stok_barang():
                 print('Barang tidak memiliki stok, tidak bisa dikurangi')
                 time.sleep(2)
                 edit_barang()
+
+            elif a > jml:
+                print('Jumlah yang diinput melebihi stok yang ada')
+                time.sleep(2)
+                kurangi_stok_barang()
             else:
                 data.loc[data['KodeBrg'] == inputKode, 'Stok'] -= a
                 data.to_csv(f'csv/toko/{inputToko}.csv', index=False)
@@ -897,8 +900,12 @@ def tambah_kendaraan():
     os.system('cls')
     status = 'Tersedia'
     kodeKendraan = input('Masukkan kode kendaraan : ').upper()
-    jenisInput = input("masukkan jenis kendaraan (Motor/Mobil): ").capitalize()
+    jenisInput = input("masukkan jenis kendaraan : ").capitalize()
     inputPlat = input("masukkan nomor Plat kendaraan: ").upper()
+    if kodeKendraan == '' or jenisInput == '' or inputPlat == '' :
+        print("input tidak boleh kosong")
+        time.sleep(2)
+        tambah_kendaraan()
     with open('csv/dataKendaraan.csv', 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow([kodeKendraan,jenisInput,inputPlat,status])
@@ -995,7 +1002,7 @@ def ganti_pass_user():
     user = input('Masukkan username user yang ingin diganti passwordnya : ').lower()
     if user in data['Username'].values:
         user2 = input('Masukkan password baru : ')
-        data = data.loc[data['Username'] == user, 'Password'] = user2
+        data.loc[data['Username'] == user, 'Password'] = user2
         data.to_csv('csv/dataUser.csv', index=False)
         print('Password berhasil diganti...')
         time.sleep(2)
@@ -1031,7 +1038,7 @@ def tampilkan_user():
     os.system('cls')
     df = pd.read_csv('csv/dataUser.csv')
     df.index = range(1, len(df)+1)
-    print(tabulate(df.head(5),headers='keys', tablefmt='grid'))
+    print(tabulate(df,headers='keys', tablefmt='grid'))
     input('Tekan enter untuk kembali>>>')
     kelola_user()
 
