@@ -143,21 +143,26 @@ def halaman_user():
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     try:
         pilihan = int(input("Masukan Pilihan Anda : "))
+        if pilihan == 1:
+            lihat_profil()
+        elif pilihan == 2:
+            pemesanan()
+        elif pilihan == 3:
+            cek_harga()
+        elif pilihan == 4:
+            histori_pemesanan()
+        elif pilihan == 5:
+            keluhan()
+        elif pilihan == 6:
+            utama()
+        else:
+            print('Pilihan tidak ada, silakan coba lagi')
+            time.sleep(2)
+            halaman_user()
     except ValueError:
         print('Harus angka & tidak boleh kosong')
+        time.sleep(2)
         halaman_user()
-    if pilihan == 1:
-        lihat_profil()
-    elif pilihan == 2:
-        pemesanan()
-    elif pilihan == 3:
-        cek_harga()
-    elif pilihan == 4:
-        histori_pemesanan()
-    elif pilihan == 5:
-        keluhan()
-    elif pilihan == 6:
-        utama()
 
 def lihat_profil():
     os.system('cls')
@@ -508,11 +513,11 @@ def kelola_mitra_Tambah():
     kodeMitra = input('Masukkan kode Mitra : ').upper()
     namaMitra = input('Masukkan nama Mitra : ').capitalize()
     alamatMitra = input('Masukkan lokasi Mitra : ').capitalize()
+    kontakMitra = int(input('Masukkan kontak Mitra : '))
     if kodeMitra == '' or namaMitra == '' or alamatMitra == '' or kontakMitra == '':
         print('Tidak boleh ada yang kosong!')
         time.sleep(2)
         halaman_user()
-    kontakMitra = int(input('Masukkan kontak Mitra : '))
     if kodeMitra in data['kode'].values:
         print('Kode sudah ada, gunakan kode lain!')
         time.sleep(2)
@@ -948,8 +953,10 @@ def kelola_user():
     print('||                1. Cek Data user              ||')
     print('||                2. Cek Data Admin             ||')
     print('||                3. Tambah user                ||')
-    print('||                4. Tambah Admin               ||')
-    print('||                5. Kembali                    ||')
+    print('||                4. Hapus user                 ||')
+    print('||                5. Ganti Pass user            ||')
+    print('||                6. Tambah Admin               ||')
+    print('||                7. Kembali                    ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     try:
         inputUser = int(input('Masukkan pilihan : '))
@@ -960,8 +967,12 @@ def kelola_user():
         elif inputUser == 3:
             tambah_user()
         elif inputUser == 4:
-            tambah_admin()
+            hapus_user()
         elif inputUser == 5:
+            ganti_pass_user()
+        elif inputUser == 6:
+            tambah_admin()
+        elif inputUser == 7:
             halaman_admin()
         else:
             print('Pilihan tidak ada')
@@ -970,6 +981,46 @@ def kelola_user():
         print('Pilihan harus berupa angka & tidak boleh kosong')
         time.sleep(2)
         kelola_user()
+
+def ganti_pass_user():
+    os.system('cls')
+    data = pd.read_csv('csv/dataUser.csv')
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    print('\nKetik "exit" untuk kembali')
+    user = input('Masukkan username user yang ingin diganti passwordnya : ').lower()
+    if user in data['Username'].values:
+        user2 = input('Masukkan password baru : ')
+        data = data.loc[data['Username'] == user, 'Password'] = user2
+        data.to_csv('csv/dataUser.csv', index=False)
+        print('Password berhasil diganti...')
+        time.sleep(2)
+        kelola_user()
+    elif user == 'exit':
+        kelola_user()
+    else:
+        print('Username tidak ditemukan')
+        time.sleep(2)
+        ganti_pass_user()
+
+def hapus_user():
+    os.system('cls')
+    data = pd.read_csv('csv/dataUser.csv')
+    data.index = range(1,len(data)+1)
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    print('\nKetik "exit" untuk kembali')
+    user = input('Masukkan username user yang ingin dihapus : ').lower()
+    if user in data['Username'].values:
+        data = data.loc[data['Username'] != user]
+        data.to_csv('csv/dataUser.csv', index=False)
+        print('User berhasil dihapus!')
+        time.sleep(2)
+        kelola_user()
+    elif user == 'exit':
+        kelola_user()
+    else:
+        print('User tidak ditemukan!')
+        time.sleep(2)
+        hapus_user()
 
 def tampilkan_user():
     os.system('cls')
