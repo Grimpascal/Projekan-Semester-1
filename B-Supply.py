@@ -395,9 +395,10 @@ def cek_harga():
     print('\nKetik "EXIT" untuk kembali')
     a = input('Masukkan kode toko yang ingin di cek : ').upper()
     if a in data['kode'].values:
+        os.system('cls')
         dataMitra = pd.read_csv(f'csv/toko/{a}.csv')
-        dataMitra.index = range(1,len(data)+1)
-        print(tabulate(data,headers='keys',tablefmt='grid'))
+        dataMitra.index = range(1,len(dataMitra)+1)
+        print(tabulate(dataMitra,headers='keys',tablefmt='grid'))
         input('Ketik ENTER untuk kembali >>> ')
         halaman_user()
     elif a == 'EXIT':
