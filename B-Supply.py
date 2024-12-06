@@ -1056,13 +1056,12 @@ def tambah_admin():
     print('Silahkan masukan data admin yang akan ditambahkan')
     adminUser = input('Masukkan username : ')
     adminPass = input('Masukkan Password : ')
-    fileAda = os.path.exists('csv/dataAdmin.csv')
     with open('csv/dataAdmin.csv', 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow([adminUser,adminPass])
         print('data Admin berhasil ditambahkan')
-        print('tekan enter untuk kembali>>>')
-    halaman_admin()
+        time.sleep(2)
+        halaman_admin()
 
 def tambah_user():
     os.system('cls')
