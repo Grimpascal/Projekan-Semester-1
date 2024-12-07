@@ -4,6 +4,7 @@ from tabulate import tabulate
 import csv
 import time
 import datetime
+import random
 
 fon = '''
 ░▒▓███████▓▒░ ░▒▓███████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓███████▓▒░░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░ 
@@ -254,70 +255,68 @@ def pesan():
     os.system('cls')
     data = pd.read_csv(f'csv/toko/{kode}.csv')
     dataUser = pd.read_csv('csv/dataUser.csv')
-    jml = int(input('Ingin membeli berapa barang : '))
-    if jml == 0:
-        print('Minimal pembelian adalah 1')
-        time.sleep(2)
-        pesan()
-    for i in range(jml):
-        print('Ketik "M" untuk melihat kode barang')
-        os.system('cls')
-        data.index = range(1,len(data)+1)
-        print(tabulate(data,headers='keys',tablefmt='grid'))
-        kodebrg = input('Masukkan kode barang yang akan dibeli : ').upper()
-        if kodebrg == 'M':
-            data.index = range(1,len(data)+1)
-            print(tabulate(data,headers='keys',tablefmt='grid'))
-            input('Ketik ENTER untuk kembali >>>')
-            pesan()
-        elif kodebrg in data['KodeBrg'].values:
-            cek = data[data['KodeBrg'] == kodebrg]
-            cekTrue = cek['Stok'].values[0]
-            cek2 = dataUser[dataUser['Username'] == userInputh]
-            cekSaldo = cek2['Saldo'].values[0]
-            a = int(input('Masukkan jumlah yang ingin dibeli : '))
-            if cekTrue < 1:
-                print('Barang tidak memiliki stok, semua akan dimulai ulang...')
-                time.sleep(2)
-                pesan()
-            elif a == 0:
-                print('Minimal pembelian adalah 1')
-                time.sleep(2)
-                pesan()
-            elif cekTrue < a:
-                print(f'Stok tidak mencukupi untuk dibeli, sisa barang {cekTrue}')
-                time.sleep(2)
-                pesan()
-            elif cekSaldo < a * cek['Harga'].values[0]:
-                print('Saldo tidak mecukupi untuk Membeli...')
-                time.sleep(2)
-                pesan()
-            else:
-                cek1 = data[data['KodeBrg'] == kodebrg]
-                cekHarga = cek1['Harga'].values[0]
-                cekNama = data['NamaBrg'].values[0]
-                hari = datetime.date.today()
-                data.loc[data['KodeBrg'] == kodebrg, 'Stok'] -= a
-                dataUser.loc[dataUser['Username'] == userInputh, 'Saldo'] -= (cekHarga * a)
-                data.to_csv(f'csv/toko/{kode}.csv',index=False)
-                dataUser.to_csv('csv/dataUser.csv',index=False)
-                if not os.path.exists(f'csv/histori/{userInputh}.csv'):
-                    with open(f'csv/histori/{userInputh}.csv','w',newline='') as file:
-                        writer = csv.writer(file)
-                        writer.writerow(['kode','NamaBrg','Jumlah','Harga','Tanggal'])
-                    with open(f'csv/histori/{userInputh}.csv','a',newline='') as file:
-                        writer = csv.writer(file)
-                        writer.writerow([kodebrg,cekNama,a,cekHarga * a,hari])
-                elif os.path.exists(f'csv/histori/{userInputh}.csv'):
-                    with open(f'csv/histori/{userInputh}.csv','a',newline='') as file:
-                        writer = csv.writer(file)
-                        writer.writerow([kodebrg,cekNama,a,cekHarga * a,hari])
-                print('Anda berhasil membeli barang...')
-                time.sleep(2)
-        else:
-            print('Kode tidak ditemukan...')
+    data.index = range(1,len(data)+1)
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    kodebrg = input('Masukkan kode barang yang akan dibeli : ').upper()
+    if kodebrg in data['KodeBrg'].values:
+        cek = data[data['KodeBrg'] == kodebrg]
+        cekTrue = cek['Stok'].values[0]
+        cek2 = dataUser[dataUser['Username'] == userInputh]
+        cekSaldo = cek2['Saldo'].values[0]
+        while True:
+            try:
+                a = int(input('Masukkan jumlah yang ingin dibeli : '))
+                break
+            except ValueError:
+                print('Jumlah tidak valid...')
+        if cekTrue < 1:
+            print('Barang tidak memiliki stok, semua akan dimulai ulang...')
             time.sleep(2)
             pesan()
+        elif a == 0:
+            print('Minimal pembelian adalah 1')
+            time.sleep(2)
+            pesan()
+        elif cekTrue < a:
+            print(f'Stok tidak mencukupi untuk dibeli, sisa barang {cekTrue}')
+            time.sleep(2)
+            pesan()
+        elif cekSaldo < a * cek['Harga'].values[0]:
+            print('Saldo tidak mecukupi untuk Membeli...')
+            time.sleep(2)
+            pesan()
+        else:
+            cek1 = data[data['KodeBrg'] == kodebrg]
+            cekHarga = cek1['Harga'].values[0]
+            cekNama = data['NamaBrg'].values[0]
+            total = cekHarga * a
+            hari = datetime.date.today()
+            randomAngka = random.randint(1,999)
+            data.loc[data['KodeBrg'] == kodebrg, 'Stok'] -= a
+            dataUser.loc[dataUser['Username'] == userInputh, 'Saldo'] -= (total)
+            data.to_csv(f'csv/toko/{kode}.csv',index=False)
+            dataUser.to_csv('csv/dataUser.csv',index=False)
+            if not os.path.exists(f'csv/histori/{userInputh}.csv'):
+                with open(f'csv/histori/{userInputh}.csv','w',newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(['kode','NamaBrg','Jumlah','Harga','Tanggal'])
+                with open(f'csv/histori/{userInputh}.csv','a',newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow([kodebrg,cekNama,a,cekHarga * a,hari])
+            elif os.path.exists(f'csv/histori/{userInputh}.csv'):
+                statusKirim = 'Belum dikirim'
+                with open(f'csv/histori/{userInputh}.csv','a',newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow([kodebrg,cekNama,a,total,hari])
+                with open('csv/dataPengiriman.csv', 'a', newline='') as kirim:
+                    writer = csv.writer(kirim)
+                    writer.writerow([randomAngka,userInputh,hari,total,statusKirim])
+            print('Anda berhasil membeli barang...')
+            time.sleep(2)
+    else:
+        print('Kode tidak ditemukan...')
+        time.sleep(2)
+        pesan()
     input('ketik ENTER untuk kembali >>> ')
     pemesanan_toko()
 
@@ -447,9 +446,10 @@ def halaman_admin():
     print('||                1. Kelola Mitra                ||')
     print('||                2. Kelola Barang               ||')
     print('||                3. Kelola kendaraan            ||')
-    print('||                4. Kelola Pengguna             ||')
-    print('||                5. Laporan                     ||')
-    print('||                6. Log Out                     ||')
+    print('||                4. Atur Pengiriman             ||')
+    print('||                5. Kelola Pengguna             ||')
+    print('||                6. Laporan                     ||')
+    print('||                7. Log Out                     ||')
     print('+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+:+')
     try:
         pilihan = int(input("Masukan Pilihan Anda : "))
@@ -460,10 +460,12 @@ def halaman_admin():
         elif pilihan == 3:
             kelola_kendaraan()
         elif pilihan == 4:
-            kelola_user()
+            atur_pengiriman()
         elif pilihan == 5:
-            laporan_admin()
+            kelola_user()
         elif pilihan == 6:
+            laporan_admin()
+        elif pilihan == 7:
             utama()
         else:
             print('Pilihan tidak ada')
@@ -473,6 +475,38 @@ def halaman_admin():
         print('Pilihan harus angka & tidak boleh kosong!')
         time.sleep(2)
         halaman_admin()
+
+def atur_pengiriman():
+    os.system('cls')
+    data = pd.read_csv('csv/dataPengiriman.csv')
+    data.index = range(1,len(data)+1)
+    print(tabulate(data,headers='keys',tablefmt='grid'))
+    print('\nKetik "0" untuk kembali')
+    inputUser = int(input('Masukkan Kode pemesanan yang akan diantar : '))
+    if inputUser in data['kode'].values:
+        os.system('cls')
+        data2 = pd.read_csv('csv/dataKendaraan.csv')
+        data2.index = range(1,len(data2)+1)
+        print(tabulate(data2,headers='keys',tablefmt='grid'))  
+        inputKode = input('Masukkan kode kendaraan untuk digunakan pengiriman : ').upper()
+        if inputKode in data2['kode'].values:
+            data2.loc[data2['kode'] == inputKode, 'Status'] = 'BEROPERASI'
+            data2.to_csv('csv/dataKendaraan.csv',index=False)
+            data.loc[data['kode'] == inputUser, 'status'] = 'Diantar'
+            data.to_csv('csv/dataPengiriman.csv',index=False)
+            print(f'Pesanan dengan kode {inputUser} telah diantar...')
+            time.sleep(2)
+            halaman_admin()
+        else:
+            print('Tidak ada kendaraan dengan kode tersebut!')
+            time.sleep(2)
+            halaman_admin()
+    elif inputUser == 0:
+        halaman_admin()
+    else:
+        print('Tidak ada pesanan dengan kode tersebut!')
+        time.sleep(2)
+        atur_pengiriman()
 
 def kelola_mitra():
     os.system('cls')
