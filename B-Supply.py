@@ -385,7 +385,6 @@ def isi_saldo():
         time.sleep(2)
         halaman_user()
 
-
 def cek_harga():
     os.system('cls')
     data = pd.read_csv('csv/dataMitra.csv')
@@ -477,36 +476,60 @@ def halaman_admin():
         halaman_admin()
 
 def atur_pengiriman():
-    os.system('cls')
-    data = pd.read_csv('csv/dataPengiriman.csv')
-    data.index = range(1,len(data)+1)
-    print(tabulate(data,headers='keys',tablefmt='grid'))
-    print('\nKetik "0" untuk kembali')
-    inputUser = int(input('Masukkan Kode pemesanan yang akan diantar : '))
-    if inputUser in data['kode'].values:
+    while True:
         os.system('cls')
-        data2 = pd.read_csv('csv/dataKendaraan.csv')
-        data2.index = range(1,len(data2)+1)
-        print(tabulate(data2,headers='keys',tablefmt='grid'))  
-        inputKode = input('Masukkan kode kendaraan untuk digunakan pengiriman : ').upper()
-        if inputKode in data2['kode'].values:
-            data2.loc[data2['kode'] == inputKode, 'Status'] = 'BEROPERASI'
-            data2.to_csv('csv/dataKendaraan.csv',index=False)
-            data.loc[data['kode'] == inputUser, 'status'] = 'Diantar'
-            data.to_csv('csv/dataPengiriman.csv',index=False)
-            print(f'Pesanan dengan kode {inputUser} telah diantar...')
+        data = pd.read_csv('csv/dataPengiriman.csv')
+        data['kode'] = data['kode'].astype(int)
+        data.index = range(1, len(data) + 1)
+        print(tabulate(data, headers='keys', tablefmt='grid'))
+        print('\nKetik "0" untuk kembali')
+        try:
+            inputUser = int(input('Masukkan Kode pemesanan yang akan diantar : '))
+        except ValueError:
+            print('Pilihan harus angka & tidak boleh kosong!')
             time.sleep(2)
+            continue
+
+        if inputUser == 0:
             halaman_admin()
+            return
+
+        if not data[(data['kode'] == inputUser) & (data['status'] == 'Diantar')].empty:
+            print('Pesanan dengan kode tersebut telah diantar!')
+            time.sleep(2)
+            continue
+
+        if inputUser in data['kode'].values:
+            os.system('cls')
+            data2 = pd.read_csv('csv/dataKendaraan.csv')
+            data2.index = range(1, len(data2) + 1)
+            print(tabulate(data2, headers='keys', tablefmt='grid'))
+
+            inputKode = input('Masukkan kode kendaraan untuk digunakan pengiriman : ').upper()
+
+            if not data2[(data2['kode'] == inputKode) & (data2['Status'] == 'BEROPERASI')].empty:
+                print('Kendaraan tersebut sedang beroperasi, pilih yang lain')
+                time.sleep(2)
+                continue
+
+            if inputKode in data2['kode'].values:
+                data2.loc[data2['kode'] == inputKode, 'Status'] = 'BEROPERASI'
+                data2.to_csv('csv/dataKendaraan.csv', index=False)
+                data.loc[data['kode'] == inputUser, 'status'] = 'Diantar'
+                data.to_csv('csv/dataPengiriman.csv', index=False)
+                print(f'Pesanan dengan kode {inputUser} telah diantar...')
+                time.sleep(2)
+                halaman_admin()
+                return
+            else:
+                print('Tidak ada kendaraan dengan kode tersebut!')
+                time.sleep(2)
+                continue
         else:
-            print('Tidak ada kendaraan dengan kode tersebut!')
+            print('Tidak ada pesanan dengan kode tersebut!')
             time.sleep(2)
-            halaman_admin()
-    elif inputUser == 0:
-        halaman_admin()
-    else:
-        print('Tidak ada pesanan dengan kode tersebut!')
-        time.sleep(2)
-        atur_pengiriman()
+            continue
+
 
 def kelola_mitra():
     os.system('cls')
