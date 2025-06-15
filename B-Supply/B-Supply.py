@@ -43,8 +43,8 @@ def login_admin():
     print('='*40)
     print('LOGIN ADMIN'.center(40))  
     print('='*40)
-    inputUser = input("Masukkan username Anda: ").rstrip().lower()
-    inputPass = input('Masukkan password Anda: ').rstrip().lower()
+    inputUser = input("Masukkan username Anda: ").strip().lower()
+    inputPass = input('Masukkan password Anda: ').strip().lower()
     data = pd.read_csv('csv/dataAdmin.csv')
     user = data[(data['Username'] == inputUser) & (data['Password'] == inputPass)]
     if not user.empty:
@@ -54,6 +54,7 @@ def login_admin():
     else:
         print("Username atau password salah, silakan coba lagi.")
         time.sleep(2)
+        return
 
 def login_user2():
     os.system('cls')
@@ -288,12 +289,12 @@ def pesan():
         else:
             cek1 = data[data['KodeBrg'] == kodebrg]
             cekHarga = cek1['Harga'].values[0]
-            cekNama = data['NamaBrg'].values[0]
+            cekNama = cek1['NamaBrg'].values[0]
             total = cekHarga * a
             hari = datetime.date.today()
             randomAngka = random.randint(1,999)
             data.loc[data['KodeBrg'] == kodebrg, 'Stok'] -= a
-            dataUser.loc[dataUser['Username'] == userInputh, 'Saldo'] -= (total)
+            dataUser.loc[dataUser['Username'] == userInputh, 'Saldo'] -= total
             data.to_csv(f'csv/toko/{kode}.csv',index=False)
             dataUser.to_csv('csv/dataUser.csv',index=False)
             if not os.path.exists(f'csv/histori/{userInputh}.csv'):
@@ -979,8 +980,8 @@ def edit_kendaraan():
         kode = input("masukkan kode kendaraan yang ingin diedit: ").upper()
         if kode in data['kode'].values:
             print('Data kendaraan ditemukan')
-            jenis_baru = input("masukkan jenis kendaraan baru (kosongkan jika tidak ada yang diubah) : ").capitalize()
-            status_baru = input("masukkan status kendaraan baru (kosongkan jika tidak ada yang diubah) : ").capitalize()
+            jenis_baru = input("masukkan jenis kendaraan baru (kosongkan jika tidak ada yang diubah) : ").upper()
+            status_baru = input("masukkan status kendaraan baru (kosongkan jika tidak ada yang diubah) : ").upper()
             if jenis_baru:
                 data.loc[data['kode'] == kode, 'Jenis'] = jenis_baru
             if status_baru:
@@ -1116,21 +1117,22 @@ def tambah_admin():
     with open('csv/dataAdmin.csv', 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow([adminUser,adminPass])
-        print('data Admin berhasil ditambahkan')
-        time.sleep(2)
-        halaman_admin()
+    print('data Admin berhasil ditambahkan')
+    time.sleep(2)
+    kelola_user()
 
 def tambah_user():
     os.system('cls')
     saldo = 0
+    hari = datetime.date.today()
     adminUser = input('Masukkan username : ')
     adminPass = input('Masukkan Password : ')
     with open('csv/dataUser.csv', 'a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([adminUser,adminPass,saldo])
-        print('data User berhasil ditambahkan')
-        input('tekan enter untuk kembali>>>')
-    halaman_admin()
+        writer.writerow([adminUser,adminPass,saldo,hari])
+    print('data User berhasil ditambahkan')
+    input('tekan enter untuk kembali>>>')
+    kelola_user()
 
 def laporan_admin():
     os.system('cls')
